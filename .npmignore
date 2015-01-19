@@ -1,0 +1,5 @@
+test-reports.xml
+*.log
+log/
+test/
+
