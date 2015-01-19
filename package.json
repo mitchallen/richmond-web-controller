@@ -1,0 +1,15 @@
+{
+  "name": "richmond-web-controller",
+  "version": "0.0.1",
+  "description": "Richmond Web Controller",
+  "main": "rwc.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@bitbucket.org:mitchallen/richmond-web-controller.git"
+  },
+  "author": "Mitch Allen <npm@mitchallen.com> (http://mitchallen.com)",
+  "license": "ISC"
+}
