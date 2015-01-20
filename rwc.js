@@ -12,6 +12,10 @@ var _parent = null;
 var _router = null;
 var _controller = [];
 
+pkg.clear = function() {
+	_controller = [];
+}
+
 pkg.parent = function( p ) {
 	_parent = p;
 	return this;
@@ -78,8 +82,10 @@ pkg.install = function( _app ) {
 	if( _put     ) _controller.push( require( './controllers/put'   		)( _parent, _router ) );
 	if( _patch   ) _controller.push( require( './controllers/patch' 		)( _parent, _router ) );
 	
-	// TODO - exception if _controller.length = 0;
-	// If 0 will get TypeError: app.use() requires middleware functions
+	if( ! _controller.length ) {
+		// If 0 will get TypeError: app.use() requires middleware functions
+		throw new Error("richmond-web-controller - activate at least one HTTP route")
+	}
 	
 	_app.use( 
 			_parent.prefix(), 
