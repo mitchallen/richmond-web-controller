@@ -8,9 +8,9 @@ var pkg = module.exports = {};
 pkg.name    = require("./package").name;
 pkg.version = require("./package").version;
 
-var _params = require( './controllers/params' ).parent( pkg );
-
 pkg.install = function( __app, __pkg, __router ) {
+	
+	var _params = require( './controllers/params' ).parent( __pkg );
 	
 	__router.param( 'model', _params.model );
 	__router.param( 'id',    _params.id );
