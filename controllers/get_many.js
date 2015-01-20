@@ -5,15 +5,16 @@
  * 
  * The pkg var is from the parent module.
  * 
- * app.use( "/api", require( './controllers/get' )( pkg, _router ) );
+ * app.use( "/api", require( './controllers/get' )( pkg, _router, ops ) );
  * 
  * See: http://www.restapitutorial.com/lessons/httpmethods.html
  * 
  */
 
-module.exports = function ( parent, _router ) {
+module.exports = function ( parent, _router, ops ) {
 	
-	// TODO - put name in a common lib
+	var options = ops || {};
+	
 	var _routeNameCollection = "get_collection";
 		
 	_router.get( 

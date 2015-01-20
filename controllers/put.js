@@ -5,13 +5,15 @@
  * 
  * The pkg var is from the parent module.
  * 
- * app.use( "/api", require( './controllers/put' )( pkg, _router ) );
+ * app.use( "/api", require( './controllers/put' )( pkg, _router, ops ) );
  * 
  * See: http://www.restapitutorial.com/lessons/httpmethods.html
  * 
  */
 
-module.exports = function ( parent, _router ) {
+module.exports = function ( parent, _router, ops ) {
+	
+	var options = ops || {};
 	
 	var _routeName = "put";
 		

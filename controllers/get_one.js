@@ -5,15 +5,16 @@
  * 
  * The pkg var is from the parent module.
  * 
- * app.use( "/api", require( './controllers/get' )( pkg, _router ) );
+ * app.use( "/api", require( './controllers/get' )( pkg, _router, ops ) );
  * 
  * See: http://www.restapitutorial.com/lessons/httpmethods.html
  * 
  */
 
-module.exports = function ( parent, _router ) {
+module.exports = function ( parent, _router, ops ) {
 		
-	// TODO - get from common enum
+	var options = ops || {};
+	
 	var _routeNameByModelId = "get_by_model_id";
 	
 	_router.get( 

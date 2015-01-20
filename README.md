@@ -4,6 +4,10 @@ Richmond Web Controller
 A Web controller for richmond.js
 -----------------------------------------------
 
+#### Version 0.0.6 release notes
+
+* Switch to setup option for defining routes
+
 #### Version 0.0.5 release notes
 
 * Added clear() method to wipe out controller array

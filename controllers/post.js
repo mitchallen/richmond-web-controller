@@ -5,7 +5,7 @@
  * 
  * The pkg var is from the parent module.
  * 
- * app.use( "/api", require( './controllers/post' )( pkg, _router ) );
+ * app.use( "/api", require( './controllers/post' )( pkg, _router, ops ) );
  * 
  * See: http://www.restapitutorial.com/lessons/httpmethods.html
  * 
@@ -17,7 +17,9 @@
  *   -d '{"email":"xyz","status":"xyz"}' http://localhost:3010/api/testdoc
  */
 
-module.exports = function ( parent, _router ) {
+module.exports = function ( parent, _router, ops ) {
+	
+	var options = ops || {};
 		
 	var _routeName = "post";
 	

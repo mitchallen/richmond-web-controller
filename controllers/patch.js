@@ -5,13 +5,15 @@
  * 
  * The pkg var is from the parent module.
  * 
- * app.use( "/api", require( './controllers/patch' )( pkg, _router ) );
+ * app.use( "/api", require( './controllers/patch' )( pkg, _router, ops ) );
  * 
  */
 
 var jsonpatch = require('fast-json-patch');
 
-module.exports = function ( parent, _router ) {
+module.exports = function ( parent, _router, ops ) {
+	
+	var options = ops || {};
 	
 	/*
 	 * Example call:
