@@ -4,6 +4,10 @@ Richmond Web Controller
 A Web controller for richmond.js
 -----------------------------------------------
 
+#### Version 0.0.4 release notes
+
+* Fixed incorrect boolean
+
 #### Version 0.0.3 release notes
 
 * Routes are now selectable via boolean setup

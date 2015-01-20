@@ -76,7 +76,10 @@ pkg.install = function( _app ) {
 	if( _post    ) _controller.push( require( './controllers/post'  		)( _parent, _router ) );
 	if( _del     ) _controller.push( require( './controllers/del'   		)( _parent, _router ) );
 	if( _put     ) _controller.push( require( './controllers/put'   		)( _parent, _router ) );
-	if( _put     ) _controller.push( require( './controllers/patch' 		)( _parent, _router ) );
+	if( _patch   ) _controller.push( require( './controllers/patch' 		)( _parent, _router ) );
+	
+	// TODO - exception if _controller.length = 0;
+	// If 0 will get TypeError: app.use() requires middleware functions
 	
 	_app.use( 
 			_parent.prefix(), 
