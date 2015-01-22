@@ -5,28 +5,35 @@
  * 
  * The pkg var is from the parent module.
  * 
- * app.use( "/api", require( './controllers/get' )( pkg, _router, ops ) );
+ * app.use( "/api", require( './controllers/get_many' )( parentInfo, methodOps ) );
  * 
  * See: http://www.restapitutorial.com/lessons/httpmethods.html
  * 
  */
 
-module.exports = function ( parent, _router, ops ) {
+var _ssl = require( '../lib/ssl' );
+
+module.exports = function ( parentInfo, methodOps ) {
 	
-	var options = ops || {};
+	var info = parentInfo || {};
+	
+	var parent = info.parent;
+	var router = info.router;
+	var prefix = info.prefix;
 	
 	var _routeNameCollection = "get_collection";
 		
-	_router.get( 
+	router.get( 
 			'/:model', 
-			parent.isSSL(_routeNameCollection), 
+			// parent.isSSL(_routeNameByModelId),
+			_ssl.isSSL( prefix, methodOps ),
 			parent.isAuthorized(_routeNameCollection), 
 			function( req, res, next ) {
 		var model = req.params.model;
-		collection = req.collection; // Set by _router.param( 'model', ... );
+		collection = req.collection; // Set by router.param( 'model', ... );
 		if( ! collection ) {
-			// TODO - should never get here if _router.params did job right
-			var emsg = "INTERNAL ERROR: _router.param let null model collection through.";
+			// TODO - should never get here if router.params did job right
+			var emsg = "INTERNAL ERROR: router.param let null model collection through.";
 			if( parent.log ) parent.log.error( emsg );
 			res.status(500).json( { error: emsg } );
 			return;
@@ -118,9 +125,9 @@ module.exports = function ( parent, _router, ops ) {
 	});
 	
 	
-	// NOTE: We are returning the _router here.
+	// NOTE: We are returning the router here.
 	
-	return _router;
+	return router;
 };
 
 

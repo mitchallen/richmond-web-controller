@@ -5,15 +5,22 @@
  * 
  * The pkg var is from the parent module.
  * 
- * app.use( "/api", require( './controllers/patch' )( pkg, _router, ops ) );
+ * app.use( "/api", require( './controllers/patch' )( parentInfo, methodOps ) );
+ * 
+ * See: http://www.restapitutorial.com/lessons/httpmethods.html
  * 
  */
 
-var jsonpatch = require('fast-json-patch');
+var jsonpatch = require('fast-json-patch'),
+	_ssl = require( '../lib/ssl' );
 
-module.exports = function ( parent, _router, ops ) {
+module.exports = function ( parentInfo, methodOps ) {
 	
-	var options = ops || {};
+	var info = parentInfo || {};
+	
+	var parent = info.parent;
+	var router = info.router;
+	var prefix = info.prefix;
 	
 	/*
 	 * Example call:
@@ -25,18 +32,19 @@ module.exports = function ( parent, _router, ops ) {
 		
 	var _routeName = "patch";
 	
-	_router.patch( 
+	router.patch( 
 			'/:model/:id', 
-			parent.rights.getToken,
-			parent.isSSL(_routeName),
+			// parent.rights.getToken,
+			// parent.isSSL(_routeNameByModelId),
+			_ssl.isSSL( prefix, methodOps ),
 			parent.isAuthorized(_routeName), 
 			function( req, res, next ) {
 				// if( ! req ) if( parent.log )  parent.log.error( "INTERNAL ERROR (patch): req not defined.");
 				var model = req.params.model;
-				collection = req.collection; // Set by _router.param( 'model', ... );
+				collection = req.collection; // Set by router.param( 'model', ... );
 				if( ! collection ) {
-					// TODO - should never get here if _router.params did job right
-					var emsg = "INTERNAL ERROR: _router.param let null model collection through.";
+					// TODO - should never get here if router.params did job right
+					var emsg = "INTERNAL ERROR: router.param let null model collection through.";
 					if( parent.log ) parent.log.error( emsg );
 					return next( { status:500, message: emsg, type:'internal'} )
 				} else {
@@ -98,7 +106,7 @@ module.exports = function ( parent, _router, ops ) {
 				}
 	});
 	
-	// NOTE: We are returning the _router here.
+	// NOTE: We are returning the router here.
 	
-	return _router;
+	return router;
 };

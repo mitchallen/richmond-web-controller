@@ -35,23 +35,29 @@ pkg.prefix = function( p ) {
 }
 
 pkg.setup = function( ops ) {
-	options = ops || {};
+	_options = ops || {};
 	return this;
 }
 
 pkg.install = function( _app ) {
 	
-	var _params = require( './controllers/params' ).parent( _parent );
+	var params = require( './controllers/params' ).parent( _parent );
 	
-	_router.param( 'model', _params.model );
-	_router.param( 'id',    _params.id );
+	_router.param( 'model', params.model );
+	_router.param( 'id',    params.id );
 	
-	if( options.getOne  ) _controller.push( require( './controllers/get_one'   	)( _parent, _router, _prefix, options.getOne  ) );
-	if( options.getMany ) _controller.push( require( './controllers/get_many'  	)( _parent, _router, _prefix, options.getMany ) );
-	if( options.post    ) _controller.push( require( './controllers/post'  		)( _parent, _router, _prefix, options.post    ) );
-	if( options.del     ) _controller.push( require( './controllers/del'   		)( _parent, _router, _prefix, options.del     ) );
-	if( options.put     ) _controller.push( require( './controllers/put'   		)( _parent, _router, _prefix, options.put     ) );
-	if( options.patch   ) _controller.push( require( './controllers/patch' 		)( _parent, _router, _prefix, options.patch   ) );
+	var parentInfo = {
+		parent: _parent,
+		router: _router,
+		prefix: _prefix
+	}
+	
+	if( _options.getOne  ) _controller.push( require( './controllers/get_one'   	)( parentInfo, _options.getOne  ) );
+	if( _options.getMany ) _controller.push( require( './controllers/get_many'  	)( parentInfo, _options.getMany ) );
+	if( _options.post    ) _controller.push( require( './controllers/post'  		)( parentInfo, _options.post    ) );
+	if( _options.del     ) _controller.push( require( './controllers/del'   		)( parentInfo, _options.del     ) );
+	if( _options.put     ) _controller.push( require( './controllers/put'   		)( parentInfo, _options.put     ) );
+	if( _options.patch   ) _controller.push( require( './controllers/patch' 		)( parentInfo, _options.patch   ) );
 	
 	if( ! _controller.length ) {
 		// If 0 will get TypeError: app.use() requires middleware functions

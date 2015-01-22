@@ -5,36 +5,43 @@
  * 
  * The pkg var is from the parent module.
  * 
- * app.use( "/api", require( './controllers/put' )( pkg, _router, ops ) );
+ * app.use( "/api", require( './controllers/put' )( parentInfo, methodOps ) );
  * 
  * See: http://www.restapitutorial.com/lessons/httpmethods.html
  * 
  */
 
-module.exports = function ( parent, _router, ops ) {
+var _ssl = require( '../lib/ssl' );
+
+module.exports = function ( parentInfo, methodOps ) {
 	
-	var options = ops || {};
+	var info = parentInfo || {};
+	
+	var parent = info.parent;
+	var router = info.router;
+	var prefix = info.prefix;
 	
 	var _routeName = "put";
 		
-	_router.put( 
+	router.put( 
 			'/:model/:id', 
-			parent.isSSL(_routeName),
+			// parent.isSSL(_routeNameByModelId),
+			_ssl.isSSL( prefix, methodOps ),
 			parent.isAuthorized(_routeName), 
 			function( req, res, next ) {
 		var model = req.params.model;
 		var id    = req.params.id;  // Validated by params.id - but may not exist
-		collection = req.collection; // Set by _router.param( 'model', ... );
+		collection = req.collection; // Set by router.param( 'model', ... );
 		// var collection = parent.model( model );
 		if( ! collection ) {
-			// TODO - should never get here if _router.params did job right
-			var emsg = "INTERNAL ERROR: _router.param let null model collection through.";"INTERNAL ERROR: _router.param let null model collection through."
+			// TODO - should never get here if router.params did job right
+			var emsg = "INTERNAL ERROR: router.param let null model collection through.";"INTERNAL ERROR: router.param let null model collection through."
 			if( parent.log ) parent.log.error( emsg );
 			res.status(500).json( { error: emsg } );
 		} else {
 			// TODO add error callback.
 			if( ! id ) {
-				var emsg = "INTERNAL ERROR: _router.id let null ID through";
+				var emsg = "INTERNAL ERROR: router.id let null ID through";
 				if( parent.log ) parent.log.error( emsg );
 				res.status(500).json( { error: emsg } );
 				return;
@@ -93,9 +100,9 @@ module.exports = function ( parent, _router, ops ) {
 		}
 	});
 	
-	// NOTE: We are returning the _router here.
+	// NOTE: We are returning the router here.
 	
-	return _router;
+	return router;
 };
 
 

@@ -5,36 +5,37 @@
  * 
  * The pkg var is from the parent module.
  * 
- * app.use( "/api", require( './controllers/post' )( pkg, _router, ops ) );
+ * app.use( "/api", require( './controllers/post' )( parentInfo, methodOps ) );
  * 
  * See: http://www.restapitutorial.com/lessons/httpmethods.html
  * 
  */
 
-/*
- * To test POST at command line (assuming port, prefix and model name):
- *   curl -X POST -H "Content-Type: application/json" 
- *   -d '{"email":"xyz","status":"xyz"}' http://localhost:3010/api/testdoc
- */
+var _ssl = require( '../lib/ssl' );
 
-module.exports = function ( parent, _router, ops ) {
+module.exports = function ( parentInfo, methodOps ) {
 	
-	var options = ops || {};
+	var info = parentInfo || {};
+	
+	var parent = info.parent;
+	var router = info.router;
+	var prefix = info.prefix;
 		
 	var _routeName = "post";
 	
-	_router.post( 
+	router.post( 
 			'/:model', 
-			parent.isSSL(_routeName),
+			// parent.isSSL(_routeNameByModelId),
+			_ssl.isSSL( prefix, methodOps ),
 			parent.isAuthorized(_routeName), 
 			function( req, res, next ) {
 				
 		model = req.params.model;
 		// var collection = parent.model( model );
-		var collection = req.collection; // Set by _router.param( 'model', ... );
+		var collection = req.collection; // Set by router.param( 'model', ... );
 		if( ! collection ) {
-			// TODO - should never get here if _router.params did job right
-			var emsg = "INTERNAL ERROR: _router.param let null model collection through.";
+			// TODO - should never get here if router.params did job right
+			var emsg = "INTERNAL ERROR: router.param let null model collection through.";
 			if( parent.log ) parent.log.error( emsg );
 			res.status(500).json( { error: emsg } );
 			return;
@@ -109,5 +110,5 @@ module.exports = function ( parent, _router, ops ) {
 		
 	// Note that we are returning the router here.
 	
-	return _router;
+	return router;
 };

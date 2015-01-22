@@ -4,6 +4,22 @@ Richmond Web Controller
 A Web controller for richmond.js
 -----------------------------------------------
 
+#### Version 0.0.12 release notes
+
+* Fixed an issue with POST
+
+#### Version 0.0.11 release notes
+
+* Cleaned up field references
+
+#### Version 0.0.10 release notes
+
+* Fixed invalid field reference
+
+#### Version 0.0.9 release notes
+
+* Implemented local isSSL for remaining controllers
+
 #### Version 0.0.8 release notes
 
 * Fixed invalid field reference.

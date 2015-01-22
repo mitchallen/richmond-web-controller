@@ -5,32 +5,39 @@
  * 
  * The pkg var is from the parent module.
  * 
- * app.use( "/api", require( './controllers/del' )( pkg, _router, ops ) );
+ * app.use( "/api", require( './controllers/del' )( parentInfo, methodOps ) );
  * 
  * See: http://www.restapitutorial.com/lessons/httpmethods.html
  * 
  */
 
-module.exports = function ( parent, _router, ops ) {
+var _ssl = require( '../lib/ssl' );
+
+module.exports = function ( parentInfo, methodOps ) {
 	
-	var options = ops || {};
+	var info = parentInfo || {};
+	
+	var parent = info.parent;
+	var router = info.router;
+	var prefix = info.prefix;
 		
 	// TODO - consider methodOveride() as an option.
 	
 	var _routeName = "delete";
 	
-	_router.delete( 
+	router.delete( 
 			'/:model/:id', 
-			parent.isSSL(_routeName), 
+			// parent.isSSL(_routeNameByModelId),
+			_ssl.isSSL( prefix, methodOps ), 
 			parent.isAuthorized(_routeName), 
 			function(req, res, next) {
 		// console.log("DEBUG: del.delete");
 		var model = req.params.model;
-		collection = req.collection; // Set by _router.param( 'model', ... );
+		collection = req.collection; // Set by router.param( 'model', ... );
 		// var collection = parent.model( model );
 		if( ! collection ) {
-			// TODO - should never get here if _router.params did job right
-			var emsg = "INTERNAL ERROR: _router.param let null model collection through.";"INTERNAL ERROR: _router.param let null model collection through."
+			// TODO - should never get here if router.params did job right
+			var emsg = "INTERNAL ERROR: router.param let null model collection through.";"INTERNAL ERROR: router.param let null model collection through."
 			if( parent.log ) parent.log.error( emsg );
 			res.status(404).json( { error: emsg } );
 			return;
@@ -94,7 +101,7 @@ module.exports = function ( parent, _router, ops ) {
 		}
 	});
 	
-	// NOTE: We are returning the _router here.
+	// NOTE: We are returning the router here.
 	
-	return _router;
+	return router;
 };
