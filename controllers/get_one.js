@@ -11,15 +11,19 @@
  * 
  */
 
-module.exports = function ( parent, _router, ops ) {
+var _ssl = require( '../lib/ssl' );
+
+module.exports = function ( parent, _router, _prefix, ops ) {
 		
 	var options = ops || {};
 	
+	// TODO - phase out
 	var _routeNameByModelId = "get_by_model_id";
 	
 	_router.get( 
 			'/:model/:id', 
-			parent.isSSL(_routeNameByModelId), 
+			// parent.isSSL(_routeNameByModelId),
+			_ssl.isSSL( _prefix, ops ),
 			parent.isAuthorized(_routeNameByModelId),  
 			function( req, res, next ) {
 		var model = req.params.model;

@@ -10,6 +10,7 @@ pkg.version = require("./package").version;
 
 var _parent = null,
 	_router = null,
+	_prefix = null,
 	_controller = [],
 	_options = {};
 
@@ -28,6 +29,11 @@ pkg.router = function( r ) {
 	return this;
 }
 
+pkg.prefix = function( p ) {
+	_prefix = p;
+	return this;
+}
+
 pkg.setup = function( ops ) {
 	options = ops || {};
 	return this;
@@ -40,12 +46,12 @@ pkg.install = function( _app ) {
 	_router.param( 'model', _params.model );
 	_router.param( 'id',    _params.id );
 	
-	if( options.getOne  ) _controller.push( require( './controllers/get_one'   	)( _parent, _router, options.getOne  ) );
-	if( options.getMany ) _controller.push( require( './controllers/get_many'  	)( _parent, _router, options.getMany ) );
-	if( options.post    ) _controller.push( require( './controllers/post'  		)( _parent, _router, options.post    ) );
-	if( options.del     ) _controller.push( require( './controllers/del'   		)( _parent, _router, options.del     ) );
-	if( options.put     ) _controller.push( require( './controllers/put'   		)( _parent, _router, options.put     ) );
-	if( options.patch   ) _controller.push( require( './controllers/patch' 		)( _parent, _router, options.patch   ) );
+	if( options.getOne  ) _controller.push( require( './controllers/get_one'   	)( _parent, _router, _prefix, options.getOne  ) );
+	if( options.getMany ) _controller.push( require( './controllers/get_many'  	)( _parent, _router, _prefix, options.getMany ) );
+	if( options.post    ) _controller.push( require( './controllers/post'  		)( _parent, _router, _prefix, options.post    ) );
+	if( options.del     ) _controller.push( require( './controllers/del'   		)( _parent, _router, _prefix, options.del     ) );
+	if( options.put     ) _controller.push( require( './controllers/put'   		)( _parent, _router, _prefix, options.put     ) );
+	if( options.patch   ) _controller.push( require( './controllers/patch' 		)( _parent, _router, _prefix, options.patch   ) );
 	
 	if( ! _controller.length ) {
 		// If 0 will get TypeError: app.use() requires middleware functions

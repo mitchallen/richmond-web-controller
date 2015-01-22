@@ -4,6 +4,14 @@ Richmond Web Controller
 A Web controller for richmond.js
 -----------------------------------------------
 
+#### Version 0.0.8 release notes
+
+* Fixed invalid field reference.
+
+#### Version 0.0.7 release notes
+
+* Implemented local isSSL for get_one
+
 #### Version 0.0.6 release notes
 
 * Switch to setup option for defining routes
