@@ -11,7 +11,8 @@
  * 
  */
 
-var _ssl = require( '../lib/ssl' );
+var _ssl = require( '../lib/ssl' ),
+	_rights = require( '../lib/rights' );
 
 module.exports = function ( parentInfo, methodOps ) {
 	
@@ -27,7 +28,8 @@ module.exports = function ( parentInfo, methodOps ) {
 			'/:model', 
 			// parent.isSSL(_routeNameByModelId),
 			_ssl.isSSL( prefix, methodOps ),
-			parent.isAuthorized(_routeNameCollection), 
+			// parent.isAuthorized(_routeNameByModelId), 
+			_rights.isAuthorized( methodOps ), 
 			function( req, res, next ) {
 		var model = req.params.model;
 		collection = req.collection; // Set by router.param( 'model', ... );

@@ -5,6 +5,8 @@
 
 var pkg = module.exports = {};
 
+
+
 pkg.name    = require("./package").name;
 pkg.version = require("./package").version;
 

@@ -12,7 +12,8 @@
  */
 
 var jsonpatch = require('fast-json-patch'),
-	_ssl = require( '../lib/ssl' );
+	_ssl = require( '../lib/ssl' ),
+	_rights = require( '../lib/rights' );
 
 module.exports = function ( parentInfo, methodOps ) {
 	
@@ -37,7 +38,8 @@ module.exports = function ( parentInfo, methodOps ) {
 			// parent.rights.getToken,
 			// parent.isSSL(_routeNameByModelId),
 			_ssl.isSSL( prefix, methodOps ),
-			parent.isAuthorized(_routeName), 
+			// parent.isAuthorized(_routeNameByModelId), 
+			_rights.isAuthorized( methodOps ), 
 			function( req, res, next ) {
 				// if( ! req ) if( parent.log )  parent.log.error( "INTERNAL ERROR (patch): req not defined.");
 				var model = req.params.model;

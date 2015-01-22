@@ -4,6 +4,26 @@ Richmond Web Controller
 A Web controller for richmond.js
 -----------------------------------------------
 
+#### Version 0.0.17 release notes
+
+* getRights now gets model from argument
+
+#### Version 0.0.16 release notes
+
+* getRights now gets model from req
+
+#### Version 0.0.15 release notes
+
+* Added missing require call
+
+#### Version 0.0.14 release notes
+
+* Migrated remaining HTTP methods to local authorization code
+
+#### Version 0.0.13 release notes
+
+* Started migrating authorization code - starting with getOne
+
 #### Version 0.0.12 release notes
 
 * Fixed an issue with POST

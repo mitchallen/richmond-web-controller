@@ -3,7 +3,10 @@
  * 
  * Usage:
  * 
- * The pkg var is from the parent module.
+ * 	var methodOps =  [ 
+ * 	   	{ model: modelName[0], rights: "PUBLIC", ssl: 302 },
+ * 		{ model: modelName[1], rights: "PUBLIC" } 
+ * 	];
  * 
  * app.use( "/api", require( './controllers/get_one' )( parentInfo, methodOps ) );
  * 
@@ -11,7 +14,8 @@
  * 
  */
 
-var _ssl = require( '../lib/ssl' );
+var _ssl = require( '../lib/ssl' ),
+	_rights = require( '../lib/rights' );
 
 module.exports = function ( parentInfo, methodOps ) {
 	
@@ -20,21 +24,23 @@ module.exports = function ( parentInfo, methodOps ) {
 	var parent = info.parent;
 	var router = info.router;
 	var prefix = info.prefix;
+	// TODO - option for rightsAccess table later
 	
 	// TODO - phase out
+	// TODO - still needed for wrapper
 	var _routeNameByModelId = "get_by_model_id";
 	
 	router.get( 
 			'/:model/:id', 
-			// parent.isSSL(_routeNameByModelId),
 			_ssl.isSSL( prefix, methodOps ),
-			parent.isAuthorized(_routeNameByModelId),  
+			// parent.isAuthorized(_routeNameByModelId), 
+			_rights.isAuthorized( methodOps ),
 			function( req, res, next ) {
 		var model = req.params.model;
 		collection = req.collection; // Set by router.param( 'model', ... );
 		if( ! collection ) {
 			// TODO - should never get here if router.params did job right
-			var emsg = "INTERNAL ERROR: router.param let null model collection through.";"INTERNAL ERROR: router.param let null model collection through."
+			var emsg = "INTERNAL ERROR: router.param let null model collection through.";
 			if( parent.log ) parent.log.error( emsg );
 			res.status(404).json( { error: emsg } );
 		} else {

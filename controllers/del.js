@@ -11,7 +11,8 @@
  * 
  */
 
-var _ssl = require( '../lib/ssl' );
+var _ssl = require( '../lib/ssl' ),
+	_rights = require( '../lib/rights' );
 
 module.exports = function ( parentInfo, methodOps ) {
 	
@@ -29,7 +30,8 @@ module.exports = function ( parentInfo, methodOps ) {
 			'/:model/:id', 
 			// parent.isSSL(_routeNameByModelId),
 			_ssl.isSSL( prefix, methodOps ), 
-			parent.isAuthorized(_routeName), 
+			// parent.isAuthorized(_routeNameByModelId), 
+			_rights.isAuthorized( methodOps ),
 			function(req, res, next) {
 		// console.log("DEBUG: del.delete");
 		var model = req.params.model;
@@ -37,7 +39,7 @@ module.exports = function ( parentInfo, methodOps ) {
 		// var collection = parent.model( model );
 		if( ! collection ) {
 			// TODO - should never get here if router.params did job right
-			var emsg = "INTERNAL ERROR: router.param let null model collection through.";"INTERNAL ERROR: router.param let null model collection through."
+			var emsg = "INTERNAL ERROR: router.param let null model collection through.";
 			if( parent.log ) parent.log.error( emsg );
 			res.status(404).json( { error: emsg } );
 			return;
