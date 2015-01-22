@@ -12,7 +12,8 @@
  */
 
 var _ssl = require( '../lib/ssl' ),
-	_rights = require( '../lib/rights' );
+	_rights = require( '../lib/rights' ),
+	u = require("underscore");
 
 module.exports = function ( parentInfo, methodOps ) {
 	

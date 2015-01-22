@@ -1,6 +1,6 @@
 {
   "name": "@minja/richmond-web-controller",
-  "version": "0.0.17",
+  "version": "0.0.21",
   "description": "Richmond Web Controller",
   "main": "rwc.js",
   "scripts": {

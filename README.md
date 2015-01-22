@@ -4,6 +4,22 @@ Richmond Web Controller
 A Web controller for richmond.js
 -----------------------------------------------
 
+#### Version 0.0.21 release notes
+
+* All controllers now require underscore library
+
+#### Version 0.0.20 release notes
+
+* Refactored getOne and getMany wrapper code
+
+#### Version 0.0.19 release notes
+
+* Implemented new wrapper code for getMany
+
+#### Version 0.0.18 release notes
+
+* Implemented new wrapper code for getOne
+
 #### Version 0.0.17 release notes
 
 * getRights now gets model from argument
