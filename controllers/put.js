@@ -17,19 +17,18 @@ var _ssl = require( '../lib/ssl' ),
 
 module.exports = function ( parentInfo, methodOps ) {
 	
-	var info = parentInfo || {};
-	
-	var parent = info.parent;
+	var info = parentInfo || {};	
+	var parent = info.parent || {};
+	var log = parent.log;
 	var router = info.router;
 	var prefix = info.prefix;
+	// TODO - option for rightsAccess table later
 	
-	var _routeName = "put";
+	var methodOps  = methodOps || {};
 		
 	router.put( 
 			'/:model/:id', 
-			// parent.isSSL(_routeNameByModelId),
 			_ssl.isSSL( prefix, methodOps ),
-			// parent.isAuthorized(_routeNameByModelId), 
 			_rights.isAuthorized( methodOps ), 
 			function( req, res, next ) {
 		var model = req.params.model;
@@ -39,16 +38,21 @@ module.exports = function ( parentInfo, methodOps ) {
 		if( ! collection ) {
 			// TODO - should never get here if router.params did job right
 			var emsg = "INTERNAL ERROR: router.param let null model collection through.";
-			if( parent.log ) parent.log.error( emsg );
+			if( log ) log.error( emsg );
 			res.status(500).json( { error: emsg } );
 		} else {
-			// TODO add error callback.
 			if( ! id ) {
 				var emsg = "INTERNAL ERROR: router.id let null ID through";
-				if( parent.log ) parent.log.error( emsg );
+				if( log ) log.error( emsg );
 				res.status(500).json( { error: emsg } );
 				return;
 			} else {
+				
+				var obj = u.find( 
+						methodOps, 
+						function(obj) { return obj.model.toLowerCase() === model.toLowerCase() } );
+				var before = obj.before;
+				var after  = obj.after;
 				
 				function send() {
 					res.sendStatus(204);	// 204 - not returning data
@@ -65,10 +69,9 @@ module.exports = function ( parentInfo, methodOps ) {
 					function(err, numAffected) {
 						// numAffected is the number of updated documents
 						if (err) {
-							if( parent.log ) parent.log.error( err );
+							if( log ) log.error( err );
 							return res.status(403).json( { error: err.message } );
 						} else {
-							var after = parent.wrapper.after(_routeName);
 							if( after ) {
 								after( 
 									function( err ) {
@@ -87,7 +90,6 @@ module.exports = function ( parentInfo, methodOps ) {
 					});
 				}
 				
-				var before = parent.wrapper.before(_routeName);
 				if( before ) {
 					before( 
 						function( err ) {

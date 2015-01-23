@@ -17,21 +17,20 @@ var _ssl = require( '../lib/ssl' ),
 
 module.exports = function ( parentInfo, methodOps ) {
 	
-	var info = parentInfo || {};
-	
-	var parent = info.parent;
+	var info = parentInfo || {};	
+	var parent = info.parent || {};
+	var log = parent.log;
 	var router = info.router;
 	var prefix = info.prefix;
+	// TODO - option for rightsAccess table later
+	
+	var methodOps  = methodOps || {};
 		
 	// TODO - consider methodOveride() as an option.
 	
-	var _routeName = "delete";
-	
 	router.delete( 
 			'/:model/:id', 
-			// parent.isSSL(_routeNameByModelId),
 			_ssl.isSSL( prefix, methodOps ), 
-			// parent.isAuthorized(_routeNameByModelId), 
 			_rights.isAuthorized( methodOps ),
 			function(req, res, next) {
 		// console.log("DEBUG: del.delete");
@@ -41,28 +40,34 @@ module.exports = function ( parentInfo, methodOps ) {
 		if( ! collection ) {
 			// TODO - should never get here if router.params did job right
 			var emsg = "INTERNAL ERROR: router.param let null model collection through.";
-			if( parent.log ) parent.log.error( emsg );
+			if( log ) log.error( emsg );
 			res.status(404).json( { error: emsg } );
 			return;
 		} else {	
+			
+			var obj = u.find( 
+					methodOps, 
+					function(obj) { return obj.model.toLowerCase() === model.toLowerCase() } );
+			var before = obj.before;
+			var after  = obj.after;
 			
 			function send() {
 				res.status(200).json( { status: "OK" } );
 			}
 			
 			function find( _extras ) {
-				// if( parent.log ) parent.log.debug("del.find")
+				// if( log ) log.debug("del.find")
 				collection.findById(req.params.id, function(err, doc) {
 					if( ! doc ) {
 						// NOTE: If doc is undefined, err may be undefined too.
 						var emsg = "No " + model + " found for id = " + req.params.id;
-						if( parent.log ) parent.log.error( emsg );
+						if( log ) log.error( emsg );
 						res.status(404).json( { error: emsg } );
 						return;
 					} else if( err ) { 
 						var emsg = "Model find error '" + model + "'";
 						var ex = { error: emsg, message: err.message };
-						if( parent.log ) parent.log.error( ex );
+						if( log ) log.error( ex );
 						res.status(404).json( ex );
 						return;
 					} else {
@@ -70,10 +75,9 @@ module.exports = function ( parentInfo, methodOps ) {
 							if( err ) {  
 								var emsg = "Model remove error '" + model + "'";
 								var ex = { error: emsg, message: err.message }
-								if( parent.log ) parent.log.error( ex );
+								if( log ) log.error( ex );
 								res.status(404).json( ex );
 							} else { 
-								var after = parent.wrapper.after(_routeName);
 								if( after ) {
 									after( 
 										function( err ) {
@@ -90,7 +94,6 @@ module.exports = function ( parentInfo, methodOps ) {
 				});
 			}
 			
-			var before = parent.wrapper.before(_routeName);
 			if( before ) {
 				before(  
 					function( err ) {

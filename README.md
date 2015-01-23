@@ -4,6 +4,10 @@ Richmond Web Controller
 A Web controller for richmond.js
 -----------------------------------------------
 
+#### Version 0.0.22 release notes
+
+* Migrated all controllers to new wrapper code
+
 #### Version 0.0.21 release notes
 
 * All controllers now require underscore library
