@@ -4,6 +4,10 @@ Richmond Web Controller
 A Web controller for richmond.js
 -----------------------------------------------
 
+#### Version 0.0.25 release notes
+
+* Refactored internal reference
+
 #### Version 0.0.24 release notes
 
 * Now uses a constructor, refactored tests
