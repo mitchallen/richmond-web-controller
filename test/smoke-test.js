@@ -4,7 +4,8 @@
 
 var should = require('should'),
     config = require('./test-config'),
-    micro = require('../rwc');
+    Controller = require('../controller'),
+    ctrl = new Controller();
 
 describe('smoke test', function () {
 	before(function () {
@@ -12,14 +13,12 @@ describe('smoke test', function () {
 	});
 	
 	it( 'should be able to get name', function( done ) {
-		// console.log( "Name:",micro.name );
-		should.exist( micro.name );
+		should.exist( ctrl.name );
 		done();
 	});
 	
 	it( 'should be able to get version', function( done ) {
-		// console.log( "Version:",micro.version );
-		should.exist( micro.version );
+		should.exist( ctrl.version );
 		done();
 	});
 

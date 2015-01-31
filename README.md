@@ -4,6 +4,14 @@ Richmond Web Controller
 A Web controller for richmond.js
 -----------------------------------------------
 
+#### Version 0.0.24 release notes
+
+* Now uses a constructor, refactored tests
+
+#### Version 0.0.23 release notes
+
+* Added fast-json-patch dependency
+
 #### Version 0.0.22 release notes
 
 * Migrated all controllers to new wrapper code

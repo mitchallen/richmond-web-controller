@@ -1,11 +1,11 @@
 /**
- * ./controllers/get_many.js
+ * ./controllers/get=many.js
  * 
  * Usage:
  * 
  * The pkg var is from the parent module.
  * 
- * app.use( "/api", require( './controllers/get_many' )( parentInfo, methodOps ) );
+ * app.use( "/api", require( './controllers/get-many' )( parentInfo, methodOps ) );
  * 
  * See: http://www.restapitutorial.com/lessons/httpmethods.html
  * 

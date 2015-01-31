@@ -1,8 +1,8 @@
 {
   "name": "@minja/richmond-web-controller",
-  "version": "0.0.22",
+  "version": "0.0.24",
   "description": "Richmond Web Controller",
-  "main": "rwc.js",
+  "main": "controller.js",
   "scripts": {
     "test": "mocha --timeout 20000",
     "//": "To use: npm run test-nodemon (assumes global location of mocha)",
@@ -23,6 +23,7 @@
     "should": "^4.6.1"
   },
   "dependencies": {
+    "fast-json-patch": "^0.5.0",
     "underscore": "^1.7.0"
   }
 }

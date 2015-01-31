@@ -1,5 +1,5 @@
 /**
- * ./controllers/get_one.js
+ * ./controllers/get=one.js
  * 
  * Usage:
  * 
@@ -8,7 +8,7 @@
  * 		{ model: modelName[1], rights: "PUBLIC" } 
  * 	];
  * 
- * app.use( "/api", require( './controllers/get_one' )( parentInfo, methodOps ) );
+ * app.use( "/api", require( './controllers/get-one' )( parentInfo, methodOps ) );
  * 
  * See: http://www.restapitutorial.com/lessons/httpmethods.html
  * 
