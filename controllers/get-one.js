@@ -1,108 +1,89 @@
 /**
  * ./controllers/get=one.js
- * 
- * Usage:
- * 
- * 	var methodOps =  [ 
- * 	   	{ model: modelName[0], rights: "PUBLIC", ssl: 302 },
- * 		{ model: modelName[1], rights: "PUBLIC" } 
- * 	];
- * 
- * app.use( "/api", require( './controllers/get-one' )( parentInfo, methodOps ) );
- * 
- * See: http://www.restapitutorial.com/lessons/httpmethods.html
- * 
  */
 
-var _ssl = require( '../lib/ssl' ),
-	_rights = require( '../lib/rights' ),
-	u = require("underscore");
+"use strict";
 
-module.exports = function ( parentInfo, methodOps ) {
-	
-	var info = parentInfo || {};	
-	var parent = info.parent || {};
-	var log = parent.log;
-	var router = info.router;
-	var prefix = info.prefix;
-	// TODO - option for rightsAccess table later
-	
-	var methodOps  = methodOps || {};
-			
-	router.get( 
-			'/:model/:id', 
-			_ssl.isSSL( prefix, methodOps ),
-			_rights.isAuthorized( methodOps ),
-			function( req, res, next ) {
-				var model = req.params.model;
-				collection = req.collection; // Set by router.param( 'model', ... );
-				if( ! collection ) {
-					// Should never get here if router.params did job right
-					var emsg = "INTERNAL ERROR: router.param let null model collection through.";
-					if( log ) { 
-					   log.error(emsg);
-					} else {
-					   console.error(emsg);
-					}
-					res.status(500).json( { error: emsg } );
-				} else {
-					
-					var obj = u.find( 
-							methodOps, 
-							function(obj) { return obj.model.toLowerCase() === model.toLowerCase() } );
-					var before = obj.before;
-					var after  = obj.after;
-			
-					function send( doc ) {
-						// If no change, sends 304 Not Modified (See: If-Modified-Since)
-						res.status(200).json( doc );
-					}
-			
-					function find( _fields, _extras ) {
-						var fields = '';
-						if( _fields ) {
-							// log.info( "DEBUG: FIELDS = " + _fields );
-							fields = _fields;
-						}
-						collection.findOne( { _id : req.params.id }, fields, function( err, doc )  {
-							if( err ) { 
-								var emsg = "Model find error '" + model + "' not found. [2]";
-								if( log ) {
-								    log.error(emsg);
-								    log.error(err);
-								} else {
-								    console.error(emsg);
-								    console.error(err);
-								}
-								// return next( err );
-								return res.status(404).json( { error: emsg, message: err.message } );
-							} else {
-								if( after ) {
-									after( 
-											{ req: req, res: res, doc: doc, extras: _extras }, 
-											send );
-								} else {
-									send( doc );
-								}
-							}
-						});
-					}
-			
-					if( before ) {
-						before( 
-								{ req: req }, 
-								find );
-					} else {
-						find( req.query.fields, null );
-					}
-				}
-			});
-	
-		// NOTE: We are returning the router here.
-	
-		return router;
+/*jslint unparam: true, nomen: true*/
+
+var m_ssl = require('../lib/ssl'),
+    m_rights = require('../lib/rights'),
+    u = require("underscore");
+
+module.exports = function (parentInfo, mOps) {
+    var info = parentInfo || {},
+        parent = info.parent || {},
+        log = parent.log,
+        router = info.router,
+        prefix = info.prefix,
+        methodOps = mOps || {};
+    router.get(
+        '/:model/:id',
+        m_ssl.isSSL(prefix, methodOps),
+        m_rights.isAuthorized(methodOps),
+        function (req, res, next) {
+            var model = req.params.model,
+                emsg = "",
+                obj,
+                before = null,
+                after = null,
+                collection = null;
+            function send(doc) {
+                // If no change, sends 304 Not Modified (See: If-Modified-Since)
+                res.status(200).json(doc);
+            }
+            collection = req.collection; // Set by router.param('model', ...);
+            if (!collection) {
+                // Should never get here if router.params did job right
+                emsg = "INTERNAL ERROR: router.param let null model collection through.";
+                if (log) {
+                    log.error(emsg);
+                } else {
+                    console.error(emsg);
+                }
+                res.status(500).json({ error: emsg });
+                return;
+            }
+            obj = u.find(
+                methodOps,
+                function (obj) { return obj.model.toLowerCase() === model.toLowerCase(); }
+            );
+            before = obj.before;
+            after  = obj.after;
+            function find(p_fields, p_extras) {
+                var fields = p_fields || '';
+                collection.findOne({ _id : req.params.id }, fields, function (err, doc) {
+                    if (err) {
+                        emsg = "Model find error '" + model + "' not found. [2]";
+                        if (log) {
+                            log.error(emsg);
+                            log.error(err);
+                        } else {
+                            console.error(emsg);
+                            console.error(err);
+                        }
+                        // return next(err);
+                        return res.status(404).json({ error: emsg, message: err.message });
+                    }
+                    if (after) {
+                        after(
+                            { req: req, res: res, doc: doc, extras: p_extras },
+                            send
+                        );
+                    } else {
+                        send(doc);
+                    }
+                });
+            }
+            if (before) {
+                before(
+                    { req: req },
+                    find
+                );
+            } else {
+                find(req.query.fields, null);
+            }
+        }
+    );
+    return router;
 };
-
-
-
-
