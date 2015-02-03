@@ -2,10 +2,13 @@
  * mock-richmond.js
  */
  
-var bodyParser = require('body-parser'),
-    multer = require('multer');
+var Log = require('log'),
+    bodyParser = require('body-parser'),
+    multer = require('multer'),
+    fs = require('fs');
 
 function MockRichmond() {
+    this.log = null;
     this.ctrl = null;
     this.m_prefix = "";
     this.m_secret = 'secret';
@@ -20,6 +23,11 @@ function MockRichmond() {
  }
 
 module.exports = MockRichmond; // For export
+
+MockRichmond.prototype.logFile = function (file) {
+    this.log = new Log('debug', fs.createWriteStream(file));
+    return this;
+};
 
 MockRichmond.prototype.controller = function (mod) {
     this.ctrl = mod;
@@ -115,13 +123,21 @@ MockRichmond.prototype.listen = function (port) {
             .install(this.app);
     }
     // ERROR handler - put last.
+    var log = this.log;
     /*jslint unparam: true*/
     this.app.use(function (err, req, res, next) {
-        var errObject = {
+        var errObject = {},
+            errJson = null;
+        errObject = {
             message: err.message,
             error: err
         };
-        console.error("ERROR HANDLER: " + JSON.stringify(errObject));
+        errJson = "ERROR HANDLER: " + JSON.stringify(errObject);
+        if (log) {
+            log.error(errJson);
+        } else {
+            console.error(errJson);
+        }
         try {
             res.status(err.status || 500);
             res.send(errObject);
@@ -131,7 +147,9 @@ MockRichmond.prototype.listen = function (port) {
         return; // Stop propagation
     });
     /*jslint unparam: false*/
-    // console.log("Listening on port:", port);
+    if (this.log) {
+        this.log.info("Listening on port:", port);
+    }
     this.server = this.app.listen(port);
     return this;
 };

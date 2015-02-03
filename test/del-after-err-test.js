@@ -1,5 +1,5 @@
 /**
- * del-test.js
+ * del-after-res-test.js
  */
 
 "use strict";
@@ -20,35 +20,42 @@ var request = require('supertest'),
     prefix = service.prefix,
     dbConfig = config.mongoose,
     testHost = service.host,
-    modelName = "DelTest",
+    modelName = "DelTest",    // Will translate to lowercase
     testSecret = 'supersecret',
     ownerEmail = "test@zap.com";
 
 var MochaTestDoc = null;
 
-describe('delete', function () {
+describe('delete after error', function () {
     before(function () {
         var testExtraMessage = 'Testing 123',
             options = {},
             beforeDelete = null,
             afterDelete = null;
-        beforeDelete = function (prop, next) {
-            var req = prop.req,
-                extras = { message: testExtraMessage };
-            should.exist(prop.req);
-            should.exist(req.token);
-            next(extras);
-        };
-        afterDelete = function (prop, next) {
-            var req = prop.req,
-                extras = prop.extras;
-            should.exist(prop.req);
-            should.exist(req.token);
-            extras.message.should.eql(testExtraMessage);
-            next();
-        };
+        beforeDelete =
+            function (prop, next) {
+                var req = prop.req,
+                    extras = { message: testExtraMessage };
+                should.exist(prop.req);
+                should.exist(req.token);
+                next(extras);
+            };
+        afterDelete =
+            function (prop, next) {
+                should.exist(next);
+                var req = prop.req,
+                    res = prop.res,
+                    extras = prop.extras;
+                should.exist(prop.req);
+                should.exist(prop.res);
+                should.exist(req.token);
+                extras.message.should.eql(testExtraMessage);
+                // Testing Response
+                res.status(402).json({ error: "Payment required." });
+                // next();    // Don't call next() after intercepting response
+            };
         micro
-            .logFile("del-test.log")
+            .logFile("del-after-err-test.log")
             .controller(
                 controller.setup({
                     del:  [{ model: modelName, rights: "PUBLIC", before: beforeDelete, after: afterDelete }],
@@ -69,11 +76,10 @@ describe('delete', function () {
         micro.listen(port);
     });
 
-    it('by the owner should succeed', function (done) {
+    it('should return the injected error', function (done) {
         var testUrl = prefix.toLowerCase() + "/" + modelName.toLowerCase(),
-            testId = "",
-            zapUrl = "",
-            testObject = {};
+            testObject = {},
+            testId = "";
         testObject = {
             email: "test" + getRandomInt(1000, 1000000) + "@zap.com",
             status: "TEST DELETE"
@@ -90,17 +96,15 @@ describe('delete', function () {
                 testId = res.body._id;
                 /*jslint nomen: false*/
                 // DELETE
-                zapUrl = testUrl + "/" + testId;
+                var zapUrl = testUrl + "/" + testId;
                 request(testHost)
                     .del(zapUrl)
-                    .set('x-auth', jwt.encode({email: ownerEmail, role: "user"}, testSecret))
-                    .expect(200)
-                    .end(function (err, res) {
+                    .set('x-auth', jwt.encode({ email: ownerEmail, role: "user" }, testSecret))
+                    .expect(402)
+                    .end(function (err) {
                         should.not.exist(err);
-                        should.exist(res.body.status);
-                        res.body.status.should.eql("OK");
-                        // PURGE all records 
-                        MochaTestDoc.remove({"email": /@/}, function (err) {
+                        // PURGE all test records 
+                        MochaTestDoc.remove({"email": /@/ }, function (err) {
                             if (err) {
                                 console.error(err);
                             }

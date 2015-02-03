@@ -8,9 +8,9 @@
 
 var request = require('supertest'),
     should = require('should'),
-    Richmond = require('./lib/mock-richmond'),
-    micro = new Richmond(),
-    config = require('./test-config'),
+    TestConfig = require('./test-config'),
+    config = new TestConfig(),
+    micro = config.richmond,
     getRandomInt = require('./test-lib').getRandomInt,
     service = config.service,
     port = service.port,
@@ -22,7 +22,7 @@ var request = require('supertest'),
 
 describe('database', function () {
     before(function () {
-        //
+        micro.logFile("db-test.log");
     });
 
     it('should accept a valid connection', function (done) {

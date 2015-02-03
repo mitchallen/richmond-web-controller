@@ -9,9 +9,9 @@
 var request = require('supertest'),
     should = require('should'),
     sleep = require('sleep'),
-    Richmond = require('./lib/mock-richmond'),
-    micro = new Richmond(),
-    config = require('./test-config'),
+    TestConfig = require('./test-config'),
+    config = new TestConfig(),
+    micro = config.richmond,
     controller = config.controller,
     getRandomInt = require('./test-lib').getRandomInt,
     service = config.service,
@@ -25,6 +25,7 @@ var request = require('supertest'),
 describe('get', function () {
     before(function () {
         micro
+            .logFile("get-test.log")
             .controller(
                 controller.setup({
                     del:      [ { model: modelName, rights: "PUBLIC" } ],
