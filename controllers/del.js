@@ -1,14 +1,5 @@
 /**
- * ./controllers/del.js
- * 
- * Usage:
- * 
- * The pkg var is from the parent module.
- * 
- * app.use("/api", require('./controllers/del')(parentInfo, methodOps));
- * 
- * See: http://www.restapitutorial.com/lessons/httpmethods.html
- * 
+ * ./controllers/del.js 
  */
 
 "use strict";
@@ -19,12 +10,13 @@ var m_ssl = require('../lib/ssl'),
     m_rights = require('../lib/rights'),
     u = require("underscore");
 
-module.exports = function (parentInfo, methodOps) {
+module.exports = function (parentInfo, mOps) {
     var info = parentInfo || {},
         parent = info.parent || {},
         log = parent.log,
         router = info.router,
-        prefix = info.prefix;
+        prefix = info.prefix,
+        methodOps = mOps || {};
     router.delete(
         '/:model/:id',
         m_ssl.isSSL(prefix, methodOps),
