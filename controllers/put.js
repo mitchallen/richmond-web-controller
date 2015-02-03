@@ -74,9 +74,6 @@ module.exports = function ( parentInfo, methodOps ) {
 						} else {
 							if( after ) {
 								after( 
-									function( err ) {
-										return next( { status:500, message: err.message, type:'internal'} )
-									}, 
 									{ 
 										req: req, 
 										res: res,
@@ -91,10 +88,7 @@ module.exports = function ( parentInfo, methodOps ) {
 				}
 				
 				if( before ) {
-					before( 
-						function( err ) {
-							return next( { status:500, message: err.message, type:'internal'} )
-						}, 
+					before(  
 						{ req: req }, 
 						update );
 				} else {

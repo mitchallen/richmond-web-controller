@@ -98,9 +98,6 @@ module.exports = function ( parentInfo, methodOps ) {
 							} else {
 								if( after ) {
 									after(
-											function( err ) {
-												return next( { status:500, message: err.message, type:'internal'} )
-											},
 											{ req: req, res: res, docs: docs, extras: _extras }, 
 											send );
 								} else {
@@ -112,10 +109,6 @@ module.exports = function ( parentInfo, methodOps ) {
 						
 					if( before ) {
 						before(
-								function( err ) {
-									var ex = { status:500, message: err.message, type:'internal'}
-									return next( ex )
-								},
 								{ req: req }, 
 								find );
 					} else {

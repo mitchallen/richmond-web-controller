@@ -81,10 +81,6 @@ module.exports = function ( parentInfo, methodOps ) {
 							// log.error( "### POST: setting up AFTER");
 							if( after ) {
 								after( 
-										function( err ) {
-											var ex = { status:500, message: err.message, type:'internal'};
-											return next( ex )
-										},
 										{ 
 											req: req,
 											res: res,
@@ -102,10 +98,6 @@ module.exports = function ( parentInfo, methodOps ) {
 			
 			if( before ) {
 				before( 
-						function( err ) {
-							var ex = { status:500, message: err.message, type:'internal'};
-							return next( ex );
-						},
 						{ req: req }, 
 						saveDocument )
 			} else {
