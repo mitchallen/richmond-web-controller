@@ -17,7 +17,11 @@ module.exports = {
 		// return 404 otherwise ???
 		if( ! collection ) {
 			var emsg = "PARAM: Model '" + model + "' not found. [1]";
-			if( _parent.log ) _parent.log.error( emsg );
+			if( _parent.log ) {
+			     _parent.log.error( emsg );
+			} else {
+			     console.error(emsg);
+			}
 			res.status(404).json( { error: emsg } );
 			return;	// stop
 		}
@@ -34,7 +38,11 @@ module.exports = {
 		// TODO: an id of 'thisisabadid' got through as valid ???
 		if( ! _parent.mongoose.Types.ObjectId.isValid( req.params.id ) ) {
 			var emsg = "PARAM: id '" + req.params.id + "' is not in a valid MongoDB ObjectID format";
-			if( _parent.log ) _parent.log.error( emsg );
+			if( _parent.log ) {
+			     _parent.log.error( emsg );
+			} else {
+			     console.error( emsg );
+			}
 			res.status(404).json( { error: emsg } );
 			return;	// stop
 		}

@@ -35,7 +35,11 @@ module.exports = function ( parentInfo, methodOps ) {
 				if( ! collection ) {
 					// TODO - should never get here if router.params did job right
 					var emsg = "INTERNAL ERROR: router.param let null model collection through.";
-					if( log ) log.error( emsg );
+					if(log) { 
+					   log.error(emsg);
+					} else {
+					   console.error(emsg);
+					}
 					res.status(500).json( { error: emsg } );
 					return;
 				} else {
@@ -91,8 +95,13 @@ module.exports = function ( parentInfo, methodOps ) {
 						collection.find( filter, fields, options, function( err, docs )  {
 							if( err ) { 
 								var emsg = "Model find error '" + model + "' not found. [2]";
-								if( log ) log.error( emsg );
-								if( log ) log.error( err );
+								if( log ) {
+								    log.error(emsg);
+								    log.error(err);
+								} else {
+								    console.error(emsg);
+								    console.error(err);
+								}
 								// return next( err );
 								res.status(404).json( { error: emsg, message: err.message } );
 							} else {

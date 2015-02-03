@@ -40,7 +40,7 @@ Controller.prototype.setup = function( ops ) {
 }
 
 Controller.prototype.install = function( app ) {
-	
+
 	var params = require( './controllers/params' ).parent( this._parent );
 	
 	this._router.param( 'model', params.model );
@@ -52,12 +52,24 @@ Controller.prototype.install = function( app ) {
 		prefix: this._prefix
 	}
 	
-	if( this._options.getOne  ) this._controller.push( require( './controllers/get-one'   	)( info, this._options.getOne  ) );
-	if( this._options.getMany ) this._controller.push( require( './controllers/get-many'  	)( info, this._options.getMany ) );
-	if( this._options.post    ) this._controller.push( require( './controllers/post'  		)( info, this._options.post    ) );
-	if( this._options.del     ) this._controller.push( require( './controllers/del'   		)( info, this._options.del     ) );
-	if( this._options.put     ) this._controller.push( require( './controllers/put'   		)( info, this._options.put     ) );
-	if( this._options.patch   ) this._controller.push( require( './controllers/patch' 		)( info, this._options.patch   ) );
+	if( this._options.getOne  ) {
+	   this._controller.push( require( './controllers/get-one'   	)( info, this._options.getOne  ) );
+	}
+	if( this._options.getMany ) {
+	   this._controller.push( require( './controllers/get-many'  	)( info, this._options.getMany ) );
+	}
+	if( this._options.post    ) {
+	   this._controller.push( require( './controllers/post'  		)( info, this._options.post    ) );
+	}
+	if( this._options.del     ) {
+	   this._controller.push( require( './controllers/del'   		)( info, this._options.del     ) );
+	}
+	if( this._options.put     ) {
+	   this._controller.push( require( './controllers/put'   		)( info, this._options.put     ) );
+    }
+	if( this._options.patch   ) {
+	   this._controller.push( require( './controllers/patch' 		)( info, this._options.patch   ) );
+	}
 	
 	if( ! this._controller.length ) {
 		// If 0 will get TypeError: app.use() requires middleware functions

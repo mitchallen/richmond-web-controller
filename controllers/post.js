@@ -40,7 +40,11 @@ module.exports = function ( parentInfo, methodOps ) {
 		if( ! collection ) {
 			// TODO - should never get here if router.params did job right
 			var emsg = "INTERNAL ERROR: router.param let null model collection through.";
-			if( log ) log.error( emsg );
+			if( log ) {
+			     log.error( emsg );
+			} else {
+			     console.error(emsg);
+			}
 			res.status(500).json( { error: emsg } );
 			return;
 		} else {
@@ -64,7 +68,11 @@ module.exports = function ( parentInfo, methodOps ) {
 				var record = new collection( body );
 				if( ! record ) {
 					var emsg = "ERROR: Creating new " + model;
-					if( log ) log.error( emsg );
+					if( log ) { 
+					   log.error( emsg );
+					} else {
+					   console.error(emsg);
+					}
 					res.status(403).json( { error: emsg } );
 					return;
 				} else {
@@ -73,9 +81,14 @@ module.exports = function ( parentInfo, methodOps ) {
 						if( err ) { 
 							var emsg = "ERROR: Can't create new '" + model + "'";
 							// Typical - doesn't pass validation, etc.
-							if( log ) log.error( emsg );
-							var ex = { error: emsg, message: err.message };
-							if( log ) log.error( ex );
+							var ex = { error: emsg, message: err.message }
+							if( log ) {
+							     log.error( emsg );
+							     log.error( ex );
+							} else {
+							     console.error( emsg );
+							     console.error( ex );
+							}
 							res.status(403).json( ex ); 
 						} else {
 							// log.error( "### POST: setting up AFTER");
