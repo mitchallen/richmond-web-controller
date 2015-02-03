@@ -7,7 +7,7 @@ var should = require('should'),
     Controller = require('../controller'),
     ctrl = new Controller();
 
-describe('smoke test', function () {
+describe('smoke controller', function () {
 	before(function () {
 		// ..
 	});
