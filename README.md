@@ -4,106 +4,228 @@ Richmond Web Controller
 A Web controller for richmond.js
 -----------------------------------------------
 
-#### Version 0.0.26 release notes
+This package is a Web controller for the richmond.js module.
 
-* Removed error parameter from before / after calls
+## Installation
 
-#### Version 0.0.25 release notes
+    $ npm init
+    $ npm install richmond --save
+    $ npm install richmond-web-controller --save
 
-* Refactored internal reference
+## Usage
 
-#### Version 0.0.24 release notes
+### Step 1: Visit MongoLab
 
-* Now uses a constructor, refactored tests
+Use your own local install of MongoDB or visit https://mongolab.com 
+and create a free test database, writing down the credentials.
 
-#### Version 0.0.23 release notes
+### Step 2: Edit ~/.bash_profile
 
-* Added fast-json-patch dependency
+Using your favorite plain text editor add the lines below to __~/.bash_profile__ (if on a Mac or Linux).
 
-#### Version 0.0.22 release notes
+Replace __SUBDOMAIN__, __DBPORT__, __DATABASE__, __USER__ and __PASSWORD__ with your values.
 
-* Migrated all controllers to new wrapper code
+You can also choose other values for __APP_SECRET__ and __TEST_PORT__.
 
-#### Version 0.0.21 release notes
+    # Application
+    export APP_SECRET=testsecret
 
-* All controllers now require underscore library
+    # MONGO LABS DB
+    export TEST_MONGO_DB=mongodb://SUBDOMAIN.mongolab.com:DBPORT/DATABASE
+    export TEST_MONGO_USER=USER
+    export TEST_MONGO_PASS=PASSWORD
 
-#### Version 0.0.20 release notes
+    export TEST_PORT=3030 
+    
+When you are done with that, execute the following at the command line:
 
-* Refactored getOne and getMany wrapper code
+    $ source ~/.bash_profile
 
-#### Version 0.0.19 release notes
+### Step 3: Create a config.js file in your projects root folder:
 
-* Implemented new wrapper code for getMany
+    /**
+     * config.js
+     */
 
-#### Version 0.0.18 release notes
+    var Controller = require('richmond-web-controller');
 
-* Implemented new wrapper code for getOne
+    module.exports = {
+        
+        controller: new Controller(),
+        
+        mongoose: {
+            uri:  process.env.TEST_MONGO_DB || 'mongodb://localhost/mytest',
+            user: process.env.TEST_MONGO_USER || null,
+            pass: process.env.TEST_MONGO_PASS || null   
+        },
+        
+        service: {
+            secret: process.env.APP_SECRET || null,
+            prefix: "/API",
+            port: process.env.TEST_PORT || null
+        }
+    };
 
-#### Version 0.0.17 release notes
+### Step 4: Create index.js in your projects root folder:
 
-* getRights now gets model from argument
+    var Richmond   = require('richmond'),
+        micro      = new Richmond(),
+        config     = require('./config'),
+        controller = config.controller,
+        service    = config.service,
+        port       = service.port,
+        prefix     = service.prefix,
+        dbConfig   = config.mongoose,
+        MyTestDoc  = null,
+        modelName  = "MyTest";  
 
-#### Version 0.0.16 release notes
+    micro
+        .logFile("my-test.log")
+        .controller( 
+            controller.setup({ 
+                del:        [{ model: modelName, rights: "PUBLIC" }],
+                getOne:     [{ model: modelName, rights: "PUBLIC" }], 
+                getMany:    [{ model: modelName, rights: "PUBLIC" }],
+                post:       [{ model: modelName, rights: "PUBLIC" }],
+                put:        [{ model: modelName, rights: "PUBLIC" }],
+            }))
+        .prefix( prefix );  
+    var options = {
+        user: dbConfig.user,
+        pass: dbConfig.pass
+    };
+    micro.connect( dbConfig.uri, options );
+    MyTestDoc = micro.addModel( modelName, {
+        email:  { type: String, required: true },
+        status: { type: String, required: true },
+        password: { type: String, select: false }, 
+    });
+    micro.listen( port );
+    console.log( "Listening on port:", port );
 
-* getRights now gets model from req
+### Step 5: Install and run the app
 
-#### Version 0.0.15 release notes
+From your projects root folder, execute the following at the command line:
 
-* Added missing require call
+    $ node index.js
 
-#### Version 0.0.14 release notes
+### Step 6: Test the app using curl commands
 
-* Migrated remaining HTTP methods to local authorization code
+Create a new record at the command line using __curl__ (assumes port __3030__):
 
-#### Version 0.0.13 release notes
+    $ curl -i -X POST -H "Content-Type: application/json" 
+      -d '{"email":"test@beta.com","password":"foo","status":"OK"}' 
+      http://localhost:3030/api/mytest
 
-* Started migrating authorization code - starting with getOne
+Now get the record (by default non-selected fields, like __password__, will not be returned):
 
-#### Version 0.0.12 release notes
+    $ curl -X GET -H "Accept: applications/json" 
+      http://localhost:3030/api/mytest 
 
-* Fixed an issue with POST
+In some browsers, like Chrome, you can also see the raw JSON returned by browsing to: http://localhost:3030/api/mytest
 
-#### Version 0.0.11 release notes
+The demo controller lets you get an individual document using the record __id__ like this (substitute for a record from your database):
 
-* Cleaned up field references
+    $ curl -X GET -H "Accept: applications/json" 
+      http://localhost:3030/api/mytest/54ce6eca470103ca057b0097
 
-#### Version 0.0.10 release notes
+You can append a filter to a GET request like this (__%7B__ = '__{__' and __%7D__ = '__}__'):
 
-* Fixed invalid field reference
+    $ curl -X GET -H "Accept: applications/json" 
+      'http://localhost:3030/api/mytest?filter=%7B"email":"test@yourdomain.com"%7D'
 
-#### Version 0.0.9 release notes
+You can also select what fields to show (__%20__ is a __space__), even non-selected fields (like password):
 
-* Implemented local isSSL for remaining controllers
+    $ curl -X GET -H "Accept: applications/json" 
+      'http://localhost:3030/api/mytest?fields=email%20status%20password'
 
-#### Version 0.0.8 release notes
+Note that if a field was never set in the record, you will not see it listed in the returned record.
 
-* Fixed invalid field reference.
+## SSL
 
-#### Version 0.0.7 release notes
+This Web controller supports SSL. 
+ 
+To use SSL with the this controller you must add an SSL key with a value of 404 or 302 in the setup.
 
-* Implemented local isSSL for get_one
+For example, here is how you would do it for getOne:
 
-#### Version 0.0.6 release notes
+    getOne: [{ model: modelName, rights: "PUBLIC", ssl: 404 }],
+    
+A value of 404 means that if a user attempts to browse to the Non-SSL version of the URL a 404 (Not Found) 
+status will be returned.
 
-* Switch to setup option for defining routes
+A value of 302 (Moved) will result in the user being redirected to the SSL equivalent of the request.
 
-#### Version 0.0.5 release notes
+## PATCH
 
-* Added clear() method to wipe out controller array
+Patch in the this controller works, but consider it experimental and perform your own testing to confirm.
 
-#### Version 0.0.4 release notes
+## Wrappers
 
-* Fixed incorrect boolean
+You can add __before__ and __after__ wrappers to the demo controller like this:
 
-#### Version 0.0.3 release notes
+    post:  [{ model: modelName, rights: "PUBLIC", 
+              before: beforePost, after: afterPost }],
+    
+This example use a __before__ method to hash a password before saving it.
 
-* Routes are now selectable via boolean setup
+The __after__ method demonstrates how to remove the hashed password before the doc is returned.
 
-#### Version 0.0.2 release notes
+The example also includes showing how to pass through extra data to the after method.:
 
-* Fixed issue with params initialization
+    var testExtraMessage = 'Testing 123';
 
-#### Version 0.0.1 release notes
+    var beforePost = 
+        function( prop, next ) {
+            var extras = { message: testExtraMessage };
+            var body = prop.req.body;
+            if( body.password != undefined ) {
+                bcrypt.hash( body.password, 10, function( err, hash ) {
+                    if( err ) {
+                        throw err;
+                    }
+                    body.password = hash;
+                    next( body, extras );
+                 });
+            } else {
+                next( body, extras );
+            }
+        };
+  
+    var afterPost = 
+        function( prop, next ) {
+            var doc = JSON.parse(JSON.stringify( prop.result ));
+            thepatch = [ { "op": "remove", "path": "/password" } ];
+            jsonpatch.apply( doc, thepatch );
+            var extras = prop.extras;
+            if( extras.message != testExtraMessage ) {
+                throw new Error( "Test extra message not what expected.");
+            }
+            next( doc );
+        };  
+    
+## Tests
 
-* Initial controller
+Tests assume that mocha has been installed globally.  If not execute the following:
+
+    $ npm install -g mocha
+
+Run the tests in one of the following two ways:
+
+    $ mocha --timeout 20000
+    
+Or
+
+    $ npm test
+
+Check the results in the apps __logs/__ folder for any errors.
+
+## Contributing
+
+In lieu of a formal styleguide, take care to maintain the existing coding style.
+Add unit tests for any new or changed functionality. Lint and test your code.
+
+#### Version 0.0.27 release notes
+
+* Pre-release
+
