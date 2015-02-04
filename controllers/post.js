@@ -8,12 +8,13 @@
 
 var m_ssl = require('../lib/ssl'),
     m_rights = require('../lib/rights'),
+    LogError = require('../lib/log-error'),
     u = require("underscore");
 
 module.exports = function (parentInfo, mOps) {
     var info = parentInfo || {},
         parent = info.parent || {},
-        log = parent.log,
+        log = new LogError(parent.log),
         router = info.router,
         prefix = info.prefix,
         methodOps  = mOps || {};
@@ -32,11 +33,7 @@ module.exports = function (parentInfo, mOps) {
             if (!Collection) {
                 // Should never get here if router.params did job right
                 emsg = "INTERNAL ERROR: router.param let null model collection through.";
-                if (log) {
-                    log.error(emsg);
-                } else {
-                    console.error(emsg);
-                }
+                log.error(emsg);
                 res.status(500).json({ error: emsg });
                 return;
             }
@@ -56,11 +53,7 @@ module.exports = function (parentInfo, mOps) {
                 var record = new Collection(body);
                 if (!record) {
                     emsg = "ERROR: Creating new " + model;
-                    if (log) {
-                        log.error(emsg);
-                    } else {
-                        console.error(emsg);
-                    }
+                    log.error(emsg);
                     res.status(403).json({ error: emsg });
                     return;
                 }
@@ -69,13 +62,8 @@ module.exports = function (parentInfo, mOps) {
                         emsg = "ERROR: Can't create new '" + model + "'";
                         // Typical - doesn't pass validation, etc.
                         ex = { error: emsg, message: err.message };
-                        if (log) {
-                            log.error(emsg);
-                            log.error(ex);
-                        } else {
-                            console.error(emsg);
-                            console.error(ex);
-                        }
+                        log.error(emsg);
+                        log.error(ex);
                         res.status(403).json(ex);
                         return;
                     }
@@ -95,10 +83,7 @@ module.exports = function (parentInfo, mOps) {
                 });
             }
             if (before) {
-                before(
-                    { req: req },
-                    saveDocument
-                );
+                before({ req: req }, saveDocument);
             } else {
                 saveDocument(req.body, null);
             }

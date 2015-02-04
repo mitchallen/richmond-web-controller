@@ -8,12 +8,13 @@
 
 var m_ssl = require('../lib/ssl'),
     m_rights = require('../lib/rights'),
+    LogError = require('../lib/log-error'),
     u = require("underscore");
 
 module.exports = function (parentInfo, mOps) {
     var info = parentInfo || {},
         parent = info.parent || {},
-        log = parent.log,
+        log = new LogError(parent.log),
         router = info.router,
         prefix = info.prefix,
         methodOps = mOps || {};
@@ -32,11 +33,7 @@ module.exports = function (parentInfo, mOps) {
             if (!collection) {
                 // Should never get here if router.params did job right
                 emsg = "INTERNAL ERROR: router.param let null model collection through.";
-                if (log) {
-                    log.error(emsg);
-                } else {
-                    console.error(emsg);
-                }
+                log.error(emsg);
                 res.status(404).json({ error: emsg });
                 return;
             }
@@ -55,34 +52,20 @@ module.exports = function (parentInfo, mOps) {
                     if (!doc) {
                         // NOTE: If doc is undefined, err may be undefined too.
                         emsg = "No " + model + " found for id = " + req.params.id;
-                        if (log) {
-                            log.error(emsg);
-                        } else {
-                            console.error(emsg);
-                        }
+                        log.error(emsg);
                         res.status(404).json({ error: emsg });
                         return;
                     }
                     if (err) {
-                        emsg = "Model find error '" + model + "'";
-                        ex = { error: emsg, message: err.message };
-                        if (log) {
-                            log.error(ex);
-                        } else {
-                            console.error(ex);
-                        }
+                        ex = { error: "Model find error '" + model + "'", message: err.message };
+                        log.error(ex);
                         res.status(404).json(ex);
                         return;
                     }
                     doc.remove(function (err) {
                         if (err) {
-                            emsg = "Model remove error '" + model + "'";
-                            ex = { error: emsg, message: err.message };
-                            if (log) {
-                                log.error(ex);
-                            } else {
-                                console.error(ex);
-                            }
+                            ex = { error: "Model remove error '" + model + "'", message: err.message };
+                            log.error(ex);
                             res.status(404).json(ex);
                         } else {
                             if (after) {
@@ -98,10 +81,7 @@ module.exports = function (parentInfo, mOps) {
                 });
             }
             if (before) {
-                before(
-                    { req: req },
-                    find
-                );
+                before({ req: req }, find);
             } else {
                 find(null);
             }

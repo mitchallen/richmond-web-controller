@@ -6,11 +6,16 @@
 
 /*jslint unparam: true*/
 
-var m_parent = null;
+var m_parent = null,
+    LogError = require('../lib/log-error'),
+    log = null;
 
 module.exports = {
     parent: function (p) {
         m_parent = p;
+        if (p) {
+            log = new LogError(p.log);
+        }
         return this;
     },
     model: function (req, res, next, model) {
@@ -20,11 +25,7 @@ module.exports = {
         // return 404 otherwise ???
         if (!collection) {
             emsg = "PARAM: Model '" + model + "' not found. [1]";
-            if (m_parent.log) {
-                m_parent.log.error(emsg);
-            } else {
-                console.error(emsg);
-            }
+            log.error(emsg);
             res.status(404).json({ error: emsg });
             return;    // stop
         }
@@ -40,11 +41,7 @@ module.exports = {
         // NOTE: an id of 'thisisabadid' got through as valid ???
         if (!m_parent.mongoose.Types.ObjectId.isValid(req.params.id)) {
             var emsg = "PARAM: id '" + req.params.id + "' is not in a valid MongoDB ObjectID format";
-            if (m_parent.log) {
-                m_parent.log.error(emsg);
-            } else {
-                console.error(emsg);
-            }
+            log.error(emsg);
             res.status(404).json({ error: emsg });
             return;    // stop
         }

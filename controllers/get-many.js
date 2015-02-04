@@ -8,12 +8,13 @@
 
 var m_ssl = require('../lib/ssl'),
     m_rights = require('../lib/rights'),
+    LogError = require('../lib/log-error'),
     u = require("underscore");
 
 module.exports = function (parentInfo, mOps) {
     var info = parentInfo || {},
         parent = info.parent || {},
-        log = parent.log,
+        log = new LogError(parent.log),
         router = info.router,
         prefix = info.prefix,
         methodOps = mOps || {};
@@ -32,11 +33,7 @@ module.exports = function (parentInfo, mOps) {
             if (!collection) {
                 // Should never get here if router.params did job right
                 emsg = "INTERNAL ERROR: router.param let null model collection through.";
-                if (log) {
-                    log.error(emsg);
-                } else {
-                    console.error(emsg);
-                }
+                log.error(emsg);
                 res.status(500).json({ error: emsg });
                 return;
             }
@@ -60,13 +57,8 @@ module.exports = function (parentInfo, mOps) {
                         filter = JSON.parse(p_filter);
                     } catch (ex) {
                         emsg = "FILTER field parsing error";
-                        if (log) {
-                            log.error(emsg);
-                            log.error(ex);
-                        } else {
-                            console.error(emsg);
-                            console.error(ex);
-                        }
+                        log.error(emsg);
+                        log.error(ex);
                         res.status(403).json({ error: emsg });
                         return;
                     }
@@ -78,13 +70,8 @@ module.exports = function (parentInfo, mOps) {
                         options = JSON.parse(p_options);
                     } catch (ex) {
                         emsg = "OPTIONS field parsing error";
-                        if (log) {
-                            log.error(emsg);
-                            log.error(ex);
-                        } else {
-                            console.error(emsg);
-                            console.error(ex);
-                        }
+                        log.error(emsg);
+                        log.error(ex);
                         res.status(403).json({ error: emsg });
                         return;
                     }
@@ -93,13 +80,7 @@ module.exports = function (parentInfo, mOps) {
                 collection.find(filter, fields, options, function (err, docs) {
                     if (err) {
                         emsg = "Model find error '" + model + "' not found. [2]";
-                        if (log) {
-                            log.error(emsg);
-                            log.error(err);
-                        } else {
-                            console.error(emsg);
-                            console.error(err);
-                        }
+                        log.error(emsg);
                         // return next(err);
                         res.status(404).json({ error: emsg, message: err.message });
                     } else {
@@ -115,10 +96,7 @@ module.exports = function (parentInfo, mOps) {
                 });
             }
             if (before) {
-                before(
-                    { req: req },
-                    find
-                );
+                before({ req: req }, find);
             } else {
                 find(
                     req.query.filter,

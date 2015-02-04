@@ -8,12 +8,13 @@
 
 var m_ssl = require('../lib/ssl'),
     m_rights = require('../lib/rights'),
+    LogError = require('../lib/log-error'),
     u = require("underscore");
 
 module.exports = function (parentInfo, mOps) {
     var info = parentInfo || {},
         parent = info.parent || {},
-        log = parent.log,
+        log = new LogError(parent.log),
         router = info.router,
         prefix = info.prefix,
         methodOps = mOps || {};
@@ -36,11 +37,7 @@ module.exports = function (parentInfo, mOps) {
             if (!collection) {
                 // Should never get here if router.params did job right
                 emsg = "INTERNAL ERROR: router.param let null model collection through.";
-                if (log) {
-                    log.error(emsg);
-                } else {
-                    console.error(emsg);
-                }
+                log.error(emsg);
                 res.status(500).json({ error: emsg });
                 return;
             }
@@ -55,13 +52,8 @@ module.exports = function (parentInfo, mOps) {
                 collection.findOne({ _id : req.params.id }, fields, function (err, doc) {
                     if (err) {
                         emsg = "Model find error '" + model + "' not found. [2]";
-                        if (log) {
-                            log.error(emsg);
-                            log.error(err);
-                        } else {
-                            console.error(emsg);
-                            console.error(err);
-                        }
+                        log.error(emsg);
+                        log.error(err);
                         // return next(err);
                         return res.status(404).json({ error: emsg, message: err.message });
                     }
@@ -76,10 +68,7 @@ module.exports = function (parentInfo, mOps) {
                 });
             }
             if (before) {
-                before(
-                    { req: req },
-                    find
-                );
+                before({ req: req }, find);
             } else {
                 find(req.query.fields, null);
             }

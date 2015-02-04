@@ -8,12 +8,13 @@
 
 var m_ssl = require('../lib/ssl'),
     m_rights = require('../lib/rights'),
+    LogError = require('../lib/log-error'),
     u = require("underscore");
 
 module.exports = function (parentInfo, mOps) {
     var info = parentInfo || {},
         parent = info.parent || {},
-        log = parent.log,
+        log = new LogError(parent.log),
         router = info.router,
         prefix = info.prefix,
         methodOps  = mOps || {};
@@ -32,13 +33,13 @@ module.exports = function (parentInfo, mOps) {
             if (!collection) {
                 // Should never get here if router.params did job right
                 emsg = "INTERNAL ERROR: router.param let null model collection through.";
-                if (log) { log.error(emsg); }
+                log.error(emsg);
                 res.status(500).json({ error: emsg });
                 return;
             }
             if (!id) {
                 emsg = "INTERNAL ERROR: router.id let null ID through";
-                if (log) { log.error(emsg); }
+                log.error(emsg);
                 res.status(500).json({ error: emsg });
                 return;
             }
@@ -64,9 +65,7 @@ module.exports = function (parentInfo, mOps) {
                     function (err, numAffected) {
                         // numAffected is the number of updated documents
                         if (err) {
-                            if (log) {
-                                log.error(err);
-                            }
+                            log.error(err);
                             return res.status(403).json({ error: err.message });
                         }
                         if (after) {
@@ -86,10 +85,7 @@ module.exports = function (parentInfo, mOps) {
                 );
             }
             if (before) {
-                before(
-                    { req: req },
-                    update
-                );
+                before({ req: req }, update);
             } else {
                 update(req.body, {}, null);
             }

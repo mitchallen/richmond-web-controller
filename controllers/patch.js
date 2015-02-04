@@ -9,12 +9,13 @@
 var jsonpatch = require('fast-json-patch'),
     m_ssl = require('../lib/ssl'),
     m_rights = require('../lib/rights'),
+    LogError = require('../lib/log-error'),
     u = require("underscore");
 
 module.exports = function (parentInfo, mOps) {
     var info = parentInfo || {},
         parent = info.parent || {},
-        log = parent.log,
+        log = new LogError(parent.log),
         router = info.router,
         prefix = info.prefix,
         methodOps  = mOps || {};
@@ -44,7 +45,7 @@ module.exports = function (parentInfo, mOps) {
             if (!collection) {
                 // Should never get here if router.params did job right
                 emsg = "INTERNAL ERROR: router.param let null model collection through.";
-                if (log) { log.error(emsg); }
+                log.error(emsg);
                 return next({ status: 500, message: emsg, type: 'internal'});
             }
             obj = u.find(
@@ -61,11 +62,8 @@ module.exports = function (parentInfo, mOps) {
                 jsonpatch.apply(source, patches);
                 source.save(function (err) {
                     if (err) {
-                        emsg = 'ERROR patching document';
-                        ex = { status: 500, message: emsg, type: 'internal'};
-                        if (log) {
-                            log.error(ex);
-                        }
+                        ex = { status: 500, message: 'ERROR patching document', type: 'internal'};
+                        log.error(ex);
                         return next(ex);
                     }
                 });
@@ -87,14 +85,11 @@ module.exports = function (parentInfo, mOps) {
             collection.findOne({ _id : req.params.id }, function (err, doc) {
                 if (err) {
                     emsg = "Model find error '" + model + "' not found. [2]";
-                    if (log) { log.error(emsg); }
-                    return next({ status: 404, message: emsg, type: 'user'});
+                    log.error(emsg);
+                    return next({ status: 404, message: emsg, type: 'user' });
                 }
                 if (before) {
-                    before(
-                        { req: req, doc: doc },
-                        patch
-                    );
+                    before({ req: req, doc: doc }, patch);
                 } else {
                     patch(req.body, doc, null);
                 }
