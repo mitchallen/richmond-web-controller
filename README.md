@@ -124,7 +124,7 @@ Now get the record (by default non-selected fields, like __password__, will not 
 
 In some browsers, like Chrome, you can also see the raw JSON returned by browsing to: http://localhost:3030/api/mytest
 
-The demo controller lets you get an individual document using the record __id__ like this (substitute for a record from your database):
+This controller lets you get an individual document using the record __id__ like this (substitute for a record from your database):
 
     $ curl -X GET -H "Accept: applications/json" 
       http://localhost:3030/api/mytest/54ce6eca470103ca057b0097
@@ -162,7 +162,7 @@ Patch in the this controller works, but consider it experimental and perform you
 
 ## Wrappers
 
-You can add __before__ and __after__ wrappers to the demo controller like this:
+You can add __before__ and __after__ wrappers to this controller like this:
 
     post:  [{ model: modelName, rights: "PUBLIC", 
               before: beforePost, after: afterPost }],
