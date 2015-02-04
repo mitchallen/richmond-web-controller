@@ -206,6 +206,16 @@ The example also includes showing how to pass through extra data to the after me
     
 ## Tests
 
+In order to run the tests, you need 
+to add two more variables to your environment: __TEST_HOST__ and __TEST_SSL__
+
+For testing, I use the services of https://ngrok.com - for a small annual fee I secured a subdomain
+that I can tunnel back to a port on my localhost for testing.  It supports both SSL and Non-SSL.
+
+    # Via ngrok
+    export TEST_HOST=http://YOURSUBDOMAIN.ngrok.com
+    export TEST_SSL=https://YOURSUBDOMAIN.ngrok.com
+
 Tests assume that mocha has been installed globally.  If not execute the following:
 
     $ npm install -g mocha
@@ -218,14 +228,14 @@ Or
 
     $ npm test
 
-Check the results in the apps __logs/__ folder for any errors.
+The tests generate log files in the projects root folder.
 
 ## Contributing
 
 In lieu of a formal styleguide, take care to maintain the existing coding style.
 Add unit tests for any new or changed functionality. Lint and test your code.
 
-#### Version 0.0.27 release notes
+#### Version 0.1.0 release notes
 
-* Pre-release
+* Initial release
 

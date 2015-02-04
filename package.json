@@ -1,6 +1,6 @@
 {
-  "name": "@minja/richmond-web-controller",
-  "version": "0.0.27",
+  "name": "richmond-web-controller",
+  "version": "0.1.0",
   "description": "Richmond Web Controller",
   "main": "controller.js",
   "scripts": {
@@ -10,9 +10,6 @@
     "test-debug": "nodemon /usr/local/bin/mocha -g '@DEBUG' --timeout 20000",
     "test-jenkins": "mocha --timeout 20000 -R xunit test/ > test-reports.xml"
   },
-  "publishConfig": {
-    "registry": "http://registry.mitchallen.com/"
-  },
   "repository": {
     "type": "git",
     "url": "git@bitbucket.org:mitchallen/richmond-web-controller.git"
@@ -20,19 +17,19 @@
   "author": "Mitch Allen <npm@mitchallen.com> (http://mitchallen.com)",
   "license": "ISC",
   "devDependencies": {
-    "bcrypt": "^0.8.1",
-    "body-parser": "^1.11.0",
-    "express": "^4.11.2",
-    "jwt-simple": "^0.2.0",
-    "log": "^1.4.0",
-    "mongoose": "^3.8.21",
-    "multer": "^0.1.7",
-    "should": "^4.6.2",
-    "sleep": "^1.2.0",
-    "supertest": "^0.15.0"
+    "bcrypt": "0.8.1",
+    "body-parser": "1.11.0",
+    "express": "4.11.2",
+    "jwt-simple": "0.2.0",
+    "log": "1.4.0",
+    "mongoose": "3.8.21",
+    "multer": "0.1.7",
+    "should": "4.6.2",
+    "sleep": "1.2.0",
+    "supertest": "0.15.0"
   },
   "dependencies": {
-    "fast-json-patch": "^0.5.0",
-    "underscore": "^1.7.0"
+    "fast-json-patch": "0.5.0",
+    "underscore": "1.7.0"
   }
 }
