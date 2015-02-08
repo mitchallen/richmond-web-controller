@@ -23,7 +23,7 @@ You can find the documentation here:
 ## Summary of Features
 
 * Richmond Web Controller
-* All requests take the form of: __http[s]://host[ *:port* ]/ *prefix* / *:model* /[ *:id* ]__
+* All requests take the form of: __http [ *s* ] ://host [ *:port* ] / *prefix* / *:model* [ / *:id* ]__
     * __port__ is provided by __richmond.js__
     * __prefix__ is provided by __richmond.js__
     * __model__ is the name of the MongoDB collection
