@@ -237,6 +237,12 @@ Add unit tests for any new or changed functionality. Lint and test your code.
 
 ## Version History
 
+#### Version 0.1.3 release notes
+
+* Removed validation of param id (:id)
+* mongoose.Types.ObjectId.isValid(req.params.id) is rejecting valid ids
+* Bogus test also failed because it said an id of 'thisisabadid' was valid.
+
 #### Version 0.1.2 release notes
 
 * Refactored internal logging.
