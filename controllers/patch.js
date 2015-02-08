@@ -23,9 +23,9 @@ module.exports = function (parentInfo, mOps) {
     /*
      * Example call:
      * 
-     * curl -i -X PATCH -H "Content-Type: application/json-patch" 
-     *   -d '[{"op":"replace","path":"/status","value":"UPDATE PATCH"}]' 
-     *   http://localhost:3010/api/testdoc/547fc48cbbb9e99a1b37dc2e
+     * $ curl -i -X PATCH -H "Content-Type: application/json" 
+     * -d '[{"op":"replace","path":"/status","value":"PATCH THE STATUS"}]' 
+     * http://localhost:3030/api/mytest/54ce741e470103ca057b0098
      */
 
     router.patch(
