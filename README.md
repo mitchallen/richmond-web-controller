@@ -15,6 +15,7 @@ This package is the official demo Web controller for the __richmond.js__ package
 ## Usage and Documentation
 
 Because this is the official *demo controller* for the __richmond.js__ core library, it is heavily documented in that package.
+
 You can find the documentation here:
 
 * [Richmond on npm](https://www.npmjs.com/package/richmond) 
@@ -22,7 +23,7 @@ You can find the documentation here:
 ## Summary of Features
 
 * Richmond Web Controller
-* All requests take the form of: http[s]://host[:port]/*prefix*/*:model*[/*:id*]
+* All requests take the form of: __http[s]://host[ *:port* ]/ *prefix* / *:model* /*[:id*]__
     * __port__ is provided by __richmond.js__
     * __prefix__ is provided by __richmond.js__
     * __model__ is the name of the MongoDB collection
@@ -36,12 +37,12 @@ You can find the documentation here:
     * __PATCH__
 * Supports requests and responses in JSON format (Content-Type: application/json).
 * Supports Multiple Models
-* Supports SSL
+* Supports SSL:
     * __404__ - if a Non-SSL request is made, will return 404 (not found).
-    * __302__ - if a Non-SSL request is made, will return 304 (moved) and redirect to the SSL equivalent.
+    * __302__ - if a Non-SSL request is made, will return 302 (moved) and redirect to the SSL equivalent.
 * Supports __richmond.js__ token management.
 * Supports rights management through tokens.
-* Supports wrappers for intercepting requests *before* and *after* they are made.
+* Supports wrappers for intercepting requests before and after they are made.
     
 ## Tests
 
@@ -75,6 +76,10 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 Add unit tests for any new or changed functionality. Lint and test your code.
 
 ## Version History
+
+#### Version 0.1.5 release notes
+
+* Refined README
 
 #### Version 0.1.4 release notes
 
