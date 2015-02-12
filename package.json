@@ -1,6 +1,6 @@
 {
   "name": "richmond-web-controller",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Richmond Web Controller",
   "main": "controller.js",
   "scripts": {
@@ -13,6 +13,10 @@
   "repository": {
     "type": "git",
     "url": "https://bitbucket.org/mitchallen/richmond-web-controller.git"
+  },
+  "repository": {
+	    "type": "git",
+	    "url": "https://github.com/mitchallen/richmond-web-controller.git"
   },
   "author": "Mitch Allen <npm@mitchallen.com> (http://mitchallen.com)",
   "license": "ISC",

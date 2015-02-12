@@ -12,6 +12,8 @@ This package is the official demo Web controller for the __richmond.js__ package
     $ npm install richmond --save
     $ npm install richmond-web-controller --save
 
+* * *
+
 ## Usage and Documentation
 
 Because this is the official *demo controller* for the __richmond.js__ core library, it is heavily documented in that package.
@@ -43,7 +45,9 @@ You can find the documentation here:
 * Supports __richmond.js__ token management.
 * Supports rights management through tokens.
 * Supports wrappers for intercepting requests before and after they are made.
-    
+
+* * *    
+
 ## Tests
 
 In order to run the tests, you need 
@@ -70,12 +74,28 @@ Or
 
 The tests generate log files in the projects root folder.
 
+* * *
+
+## Repos
+
+* [bitbucket.org/mitchallen/richmond-web-controller.git](https://bitbucket.org/mitchallen/richmond-web-controller.git)
+* [github.com/mitchallen/richmond-web-controller.git](https://github.com/mitchallen/richmond-web-controller.git)
+
+* * *
+
 ## Contributing
 
 In lieu of a formal styleguide, take care to maintain the existing coding style.
 Add unit tests for any new or changed functionality. Lint and test your code.
 
+* * *
+
 ## Version History
+
+#### Version 0.1.6 release notes
+
+* Added new github repo to package.json
+* Updated README with repo list
 
 #### Version 0.1.5 release notes
 
