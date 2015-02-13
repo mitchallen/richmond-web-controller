@@ -62,7 +62,7 @@ describe('post after error', function () {
                 // next(doc);    // Don't call when intercepting
             };
         micro
-            .logFile("post-after-res-test.log")
+            .logFile(config.logFolder + "post-after-res-test.log")
             .controller(
                 controller.setup({
                     del:      [{ model: modelName, rights: "PUBLIC" }],

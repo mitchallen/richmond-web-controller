@@ -67,7 +67,7 @@ describe('post', function () {
             next(doc);
         };
         micro
-            .logFile("post-test.log")
+            .logFile(config.logFolder + "post-test.log")
             .controller(
                 controller.setup({
                     del:        [{ model: modelName, rights: "PUBLIC" }],

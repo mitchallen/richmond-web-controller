@@ -26,7 +26,7 @@ var request = require('supertest'),
 describe('admin rights', function () {
     before(function () {
         micro
-            .logFile("rights-admin-test.log")
+            .logFile(config.logFolder + "rights-admin-test.log")
             .controller(
                 controller.setup({
                     del:        [{ model: modelName, rights: "PUBLIC" }],

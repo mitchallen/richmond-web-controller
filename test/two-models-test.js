@@ -25,7 +25,7 @@ var request = require('supertest'),
 describe('two models', function () {
     before(function () {
         micro
-            .logFile("two-models-test.log")
+            .logFile(config.logFolder + "two-models-test.log")
             .controller(
                 controller.setup({
                     del:        [ { model: modelName[0], rights: "PUBLIC" },

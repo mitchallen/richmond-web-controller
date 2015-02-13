@@ -47,7 +47,7 @@ describe('put after error', function () {
             // next();// Don't call next when returning a response
         };
         micro
-            .logFile("put-after-err-test.log")
+            .logFile(config.logFolder + "put-after-err-test.log")
             .controller(
                 controller.setup({
                     del:        [{ model: modelName, rights: "PUBLIC" }],

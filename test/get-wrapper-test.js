@@ -81,7 +81,7 @@ describe('get before and after', function () {
             next(doc);
         };
         micro
-            .logFile("get-wrapper-test.log")
+            .logFile(config.logFolder + "get-wrapper-test.log")
             .controller(
                 controller.setup({
                     getOne:     [{ model: modelName, rights: "PUBLIC",     before: beforeOne, after: afterOne  }],

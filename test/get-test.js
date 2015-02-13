@@ -25,7 +25,7 @@ var request = require('supertest'),
 describe('get', function () {
     before(function () {
         micro
-            .logFile("get-test.log")
+            .logFile(config.logFolder + "get-test.log")
             .controller(
                 controller.setup({
                     del:      [ { model: modelName, rights: "PUBLIC" } ],

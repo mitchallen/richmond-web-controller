@@ -1,6 +1,6 @@
 {
   "name": "richmond-web-controller",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Richmond Web Controller",
   "main": "controller.js",
   "scripts": {

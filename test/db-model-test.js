@@ -23,7 +23,7 @@ describe('model library', function () {
         var options = {},
             testModel = null,
             dbConn = null;
-        micro.logFile("db-model-test.log");
+        micro.logFile(config.logFolder + "db-model-test.log");
         options = {
             user: dbConfig.user,
             pass: dbConfig.pass

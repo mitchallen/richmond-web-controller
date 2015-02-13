@@ -28,7 +28,7 @@ describe('patch', function () {
         var testExtraMessage = 'Testing 123',
             dbOptions = {};
         micro
-            .logFile("patch-test.log")
+            .logFile(config.logFolder + "patch-test.log")
             .controller(
                 controller.setup({
                     del:        [{ model: modelName, rights: "PUBLIC" }],
