@@ -4,6 +4,16 @@ Richmond Web Controller
 Official Demo Web controller for richmond.js
 -----------------------------------------------
 
+<a href="https://npmjs.org/package/richmond-web-controller">
+    <img src="http://img.shields.io/npm/dt/richmond-web-controller.svg?style=flat-square" alt="Downloads">
+</a>
+<a href="https://npmjs.org/package/richmond-web-controller">
+    <img src="http://img.shields.io/npm/v/richmond-web-controller.svg?style=flat-square" alt="Version">
+</a>
+<a href="https://npmjs.com/package/richmond-web-controller">
+    <img src="https://img.shields.io/npm/l/richmond-web-controller.svg?style=flat-square" alt="License"></a>
+</a>
+
 This package is the official demo Web controller for the __richmond.js__ package.
 
 ## Installation
@@ -53,8 +63,7 @@ You can find the documentation here:
 In order to run the tests, you need 
 to add two more variables to your environment: __TEST_HOST__ and __TEST_SSL__
 
-For testing, I use the services of https://ngrok.com - for a small annual fee I secured a subdomain
-that I can tunnel back to a port on my localhost for testing.  It supports both SSL and Non-SSL.
+For testing, I use the services of https://ngrok.com - for a small fee I secured a subdomain that I can tunnel back to a port on my localhost for testing.  It supports both SSL and Non-SSL.
 
     # Via ngrok
     export TEST_HOST=http://YOURSUBDOMAIN.ngrok.com
