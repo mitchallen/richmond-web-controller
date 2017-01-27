@@ -1,5 +1,11 @@
 test-reports.xml
 *.log
 logs/
+examples/
+Gruntfile.js
+coverage/
+example/
+support/
 test/
-
+.gitignore
+.travis.yml

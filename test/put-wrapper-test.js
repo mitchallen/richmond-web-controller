@@ -40,8 +40,6 @@ describe('put before after', function () {
         afterPut = function (prop, next) {
             should.exist(prop.req);
             should.exist(prop.req);
-            should.exist(prop.numAffected);
-            prop.numAffected.should.eql(1);
             next();
         };
 

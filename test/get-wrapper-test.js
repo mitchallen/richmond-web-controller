@@ -9,6 +9,7 @@
 var request = require('supertest'),
     should = require('should'),
     jwt = require('jwt-simple'),
+    ngrok = require('ngrok'),
     TestConfig = require('./test-config'),
     config = new TestConfig(),
     micro = config.richmond,
@@ -104,6 +105,14 @@ describe('get before and after', function () {
         micro.listen(port);
     });
 
+    afterEach(function () {
+        ngrok.disconnect();
+    });
+
+    after(function () {
+        micro.closeService();
+    });
+
     it('get filter should respond with proper document', function (done) {
         var testUrl = prefix.toLowerCase() + "/" + modelName.toLowerCase(),
             testEmail = afterTestEmail,
@@ -123,31 +132,39 @@ describe('get before and after', function () {
                 should.not.exist(err);
                 should.exist(res);
                 // GET
-                request(sslHost)
-                    .get(testUrl)
-                    .set('x-auth', jwt.encode({ email: testEmail, role: "user" }, testSecret))
-                    .query('filter={"email":"' + testEmail + '"}')
-                    // MUST USE DOUBLE QUOTES - or JSON.parse bombs in GET.
-                    // .expect('Content-Type', /json/)    // Sometimes returns 302 / HTML (nginx)
-                    .expect(200)
-                    .end(function (err, res) {
-                        should.not.exist(err);
-                        should.exist(res.body);
-                        should.exist(res.body.length);
-                        // Should be 2 because afterGet added something
-                        res.body.length.should.eql(2);
-                        // console.log(JSON.stringify(res.body));
-                        should.exist(res.body[0].email);
-                        should.exist(res.body[0].status);
-                        res.body[0].email.should.eql(testEmail);
-                        // PURGE all records 
-                        MochaTestDoc.remove({"email": /@/ }, function (err) {
-                            if (err) {
-                                console.error(err);
-                            }
-                            done();
+                var options = {
+                    proto: 'http',
+                    addr: service.port
+                }
+                ngrok.connect( options, function( err, grokHostSSL ) {
+                    if(err) done(err);
+                    // request(sslHost)
+                    request(grokHostSSL)
+                        .get(testUrl)
+                        .set('x-auth', jwt.encode({ email: testEmail, role: "user" }, testSecret))
+                        .query( { filter: '{"email":"' + testEmail + '"}' } )
+                        // MUST USE DOUBLE QUOTES - or JSON.parse bombs in GET.
+                        // .expect('Content-Type', /json/)    // Sometimes returns 302 / HTML (nginx)
+                        .expect(200)
+                        .end(function (err, res) {
+                            should.not.exist(err);
+                            should.exist(res.body);
+                            should.exist(res.body.length);
+                            // Should be 2 because afterGet added something
+                            res.body.length.should.eql(2);
+                            // console.log(JSON.stringify(res.body));
+                            should.exist(res.body[0].email);
+                            should.exist(res.body[0].status);
+                            res.body[0].email.should.eql(testEmail);
+                            // PURGE all records 
+                            MochaTestDoc.remove({"email": /@/ }, function (err) {
+                                if (err) {
+                                    console.error(err);
+                                }
+                                done();
+                            });
                         });
-                    });
+                });
             });
     });
 
@@ -190,8 +207,6 @@ describe('get before and after', function () {
                     });
             });
     });
-    after(function () {
-        micro.closeService();
-    });
+
 });
 

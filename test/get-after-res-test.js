@@ -9,6 +9,7 @@
 var request = require('supertest'),
     should = require('should'),
     jwt = require('jwt-simple'),
+    ngrok = require('ngrok'),
     TestConfig = require('./test-config'),
     config = new TestConfig(),
     micro = config.richmond,
@@ -110,6 +111,14 @@ describe('get after error injection', function () {
         micro.listen(port);
     });
 
+    afterEach(function () {
+        ngrok.disconnect();
+    });
+
+    after(function () {
+        micro.closeService();
+    });
+
     it('should return the injected error instead of a document', function (done) {
         var testUrl = prefix.toLowerCase() + "/" + modelName.toLowerCase(),
             testId = null,
@@ -168,22 +177,27 @@ describe('get after error injection', function () {
                 should.not.exist(err);
                 should.exist(res);
                 // GET
-                request(sslHost)
-                    .get(testUrl)
-                    .set('x-auth', jwt.encode({ email: testEmail, role: "user" }, testSecret))
-                    .query('filter={"email":"' + testEmail + '"}')
-                    // MUST USE DOUBLE QUOTES - or JSON.parse bombs in GET.
-                    // .expect('Content-Type', /json/)    // Sometimes returns 302 / HTML (nginx)
-                    .expect(402)
-                    .end(function (err, res) {
-                        should.not.exist(err);
-                        should.exist(res);
-                        done();
-                    });
+                var options = {
+                    proto: 'http',
+                    addr: service.port
+                }
+                ngrok.connect( options, function( err, grokHostSSL ) {
+                    if(err) done(err);
+                    // request(sslHost)
+                    request(grokHostSSL)
+                        .get(testUrl)
+                        .set('x-auth', jwt.encode({ email: testEmail, role: "user" }, testSecret))
+                        .query( { filter: '{"email":"' + testEmail + '"}' } )
+                        // MUST USE DOUBLE QUOTES - or JSON.parse bombs in GET.
+                        // .expect('Content-Type', /json/)    // Sometimes returns 302 / HTML (nginx)
+                        .expect(402)
+                        .end(function (err, res) {
+                            should.not.exist(err);
+                            should.exist(res);
+                            done();
+                        });
+                });
             });
     });
 
-    after(function () {
-        micro.closeService();
-    });
 });
