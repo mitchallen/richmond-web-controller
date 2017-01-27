@@ -94,6 +94,10 @@ Add unit tests for any new or changed functionality. Lint and test your code.
 
 ## Version History
 
+#### Version 0.1.9 release notes
+
+* brought code coverage up to 82%
+
 #### Version 0.1.8 release notes
 
 * updated test cases, integrated ngrok, travis-ci, codecov
