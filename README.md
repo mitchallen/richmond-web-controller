@@ -4,6 +4,12 @@ Richmond Web Controller
 Official Demo Web controller for richmond.js
 -----------------------------------------------
 
+<a href="https://travis-ci.org/mitchallen/richmond-web-controller">
+    <img src="https://img.shields.io/travis/mitchallen/richmond-web-controller.svg?style=flat-square" alt="CI">
+</a>
+<a href="https://codecov.io/gh/mitchallen/richmond-web-controller">
+<img src="https://codecov.io/gh/mitchallen/richmond-web-controller/branch/master/graph/badge.svg" alt="Coverage Status">
+ </a>
 <a href="https://npmjs.org/package/richmond-web-controller">
     <img src="http://img.shields.io/npm/dt/richmond-web-controller.svg?style=flat-square" alt="Downloads">
 </a>
@@ -60,19 +66,6 @@ You can find the documentation here:
 
 ## Tests
 
-In order to run the tests, you need 
-to add two more variables to your environment: __TEST_HOST__ and __TEST_SSL__
-
-For testing, I use the services of https://ngrok.com - for a small fee I secured a subdomain that I can tunnel back to a port on my localhost for testing.  It supports both SSL and Non-SSL.
-
-    # Via ngrok
-    export TEST_HOST=http://YOURSUBDOMAIN.ngrok.com
-    export TEST_SSL=https://YOURSUBDOMAIN.ngrok.com
-
-Tests assume that mocha has been installed globally.  If not execute the following:
-
-    $ npm install -g mocha
-
 Run the tests in one of the following two ways:
 
     $ mocha --timeout 20000
@@ -100,6 +93,10 @@ Add unit tests for any new or changed functionality. Lint and test your code.
 * * *
 
 ## Version History
+
+#### Version 0.1.8 release notes
+
+* updated test cases, integrated ngrok, travis-ci, codecov
 
 #### Version 0.1.7 release notes
 
